@@ -26,7 +26,7 @@ from dataset import RSNADataset
 from utils import load_model
 
 
-config = yaml.load(open('config.yaml', 'r'), Loader=yaml.FullLoader)
+config = yaml.load(open('config_init.yaml', 'r'), Loader=yaml.FullLoader)
 
 
 run = wandb.init(entity='biomed', project='model_soups', config=config)
@@ -36,6 +36,7 @@ LEARNING_RATE = float(config["LEARNING_RATE"])
 LEARNING_SCHEDULER = config["LEARNING_SCHEDULER"]
 BATCH_SIZE = int(config["BATCH_SIZE"])
 NUM_EPOCHS = int(config["NUM_EPOCHS"])
+NUM_CLASSES = int(config["NUM_CLASSES"])
 LINEAR_PROBING = config["LINEAR_PROBING"]
 PROBING_EPOCHS = int(config["PROBING_EPOCHS"])
 PATIENCE = int(config["PATIENCE"])
@@ -46,8 +47,13 @@ IMAGE_SIZE = int(config["IMAGE_SIZE"])
 MODEL = config["MODEL"]
 PRETRAINED = config["PRETRAINED"]
 
-#source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
-DEVICE = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+DATASET = config["DATASET"]
+RSNA_CSV = config["RSNA_CSV"]
+RSNA_PATH = config["RSNA_PATH"]
+CUDA_DEVICE = int(config["CUDA_DEVICE"])
+
+DEVICE = torch.device(f"cuda:{CUDA_DEVICE}" if torch.cuda.is_available() else 'cpu')
+
 print(f"Using {DEVICE} device")
 
 
@@ -76,19 +82,9 @@ def main():
 
     #load data
     train_transform = v2.Compose([
-    # transforms.ToTensor(),
-    #  transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        
         v2.ToTensor(),
-        # v2.ToDtype(torch.float32),
         v2.RandomRotation(degrees=(-70, 70)),
-        # v2.RandomAffine(degrees=(-15, 15), translate=(0.25, 0.25), scale=(0.7, 1.2), shear=(-15, 15, -15, 15)),
-        # v2.RandomPerspective(distortion_scale=0.2, p=0.2),
         v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.7, 1.2), antialias=True),
-        # v2.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
-        # v2.GaussianBlur(kernel_size=3, sigma=(0.1, 1.0)),
-        # v2.RandomAutocontrast(p=0.2),
-        # v2.RandomEqualize(p=0.2),
         v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
     ])
 
@@ -96,29 +92,29 @@ def main():
         v2.ToTensor(),
         v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
         v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
-
         ])
 
+    if DATASET == "Cifar":
+        ##Cifar Dataset
+        trainset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=train_transform)
+        valset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=val_transform)
+        test_dataset = torchvision.datasets.CIFAR10(root='./dataset', train=False, transform=val_transform)
 
-    # classes = ('plane', 'car', 'bird', 'cat',
-    # 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+        train_size = int(0.9 * len(trainset))
+        val_size = len(trainset) - train_size
+        
+        _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size])
 
-    # train_dataset = RSNADataset(csv_file="dataset/rsna_18/csv/final_dataset_wo_not_normal_cases.csv", data_folder="dataset/rsna_18", split="train", transform=train_transform)
+        train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size])
 
-    # val_dataset = RSNADataset(csv_file="dataset/rsna_18/csv/final_dataset_wo_not_normal_cases.csv", data_folder="dataset/rsna_18", split="val", transform=val_transform)
+    elif DATASET == "Rsna":
+        ##RSNA Dataset
+        train_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="train", transform=train_transform)
 
-    # test_dataset = RSNADataset(csv_file="dataset/rsna_18/csv/final_dataset_wo_not_normal_cases.csv", data_folder="dataset/rsna_18", split="test", transform=val_transform)
+        val_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="val", transform=val_transform)
+        
+        test_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="test", transform=val_transform)
 
-    trainset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=train_transform, download=True)
-    valset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=val_transform)
-    test_dataset = torchvision.datasets.CIFAR10(root='./dataset', train=False, transform=val_transform)
-
-    train_size = int(0.9 * len(trainset))
-    val_size = len(trainset) - train_size
-    
-    _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size])
-
-    train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size])
 
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=8)
@@ -126,7 +122,7 @@ def main():
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=8)
 
     #load model
-    model = get_model(MODEL, PRETRAINED, num_classes=10)
+    model = get_model(MODEL, PRETRAINED, num_classes=NUM_CLASSES)
 
 
     model.to(DEVICE)
