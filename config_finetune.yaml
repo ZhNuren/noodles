@@ -15,7 +15,9 @@ LOSS: CrossEntropyLoss
 
 CUDA_DEVICE: 0
 
-RUN_NAME: "2023-12-26_18-28-36" #specify init model path
+# RUN_NAME: "2023-12-26_18-28-36" #CIFAR
+RUN_NAME: "2023-12-26_21-49-40" #RSNA
+
 
 LR_RATE_LIST: [3e-4 , 1e-4, 3e-5 , 1e-5]
 NUM_EPOCHS_MINIMAL: [15, 20, 25]
