@@ -46,7 +46,8 @@ IMAGE_SIZE = int(config["IMAGE_SIZE"])
 MODEL = config["MODEL"]
 PRETRAINED = config["PRETRAINED"]
 
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
+DEVICE = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 print(f"Using {DEVICE} device")
 
 
@@ -108,7 +109,7 @@ def main():
 
     # test_dataset = RSNADataset(csv_file="dataset/rsna_18/csv/final_dataset_wo_not_normal_cases.csv", data_folder="dataset/rsna_18", split="test", transform=val_transform)
 
-    trainset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=train_transform)
+    trainset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=train_transform, download=True)
     valset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=val_transform)
     test_dataset = torchvision.datasets.CIFAR10(root='./dataset', train=False, transform=val_transform)
 
@@ -183,8 +184,8 @@ def main():
     )
 
     
-
-    model = load_model(model, save_dir + "/best_model.pt")
+    checkpoint = torch.load(save_dir + "/best_checkpoint.pth")
+    model.load_state_dict(checkpoint['model'])
     model.to(DEVICE)
     torch.compile(model)
 

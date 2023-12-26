@@ -162,11 +162,18 @@ def trainer(
 
         wandb.log({"train_loss": train_loss, "val_loss": val_loss, "train_acc": train_acc, "val_acc": val_acc})
 
+        checkpoint = { 
+                'epoch': epoch,
+                'model': model.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'lr_sched': lr_scheduler}
+        
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), os.path.join(save_dir, "best_model.pt"))
+            
+            torch.save(checkpoint, os.path.join(save_dir, "best_checkpoint.pth"))
 
-        save_model(model, save_dir + "/last_model.pt")
+        torch.save(checkpoint, os.path.join(save_dir, "last_checkpoint.pth"))
 
         if early_stopper is not None:
             if early_stopper.early_stop(val_loss):
