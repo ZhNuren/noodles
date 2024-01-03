@@ -210,9 +210,14 @@ def main():
                     train_size = int(0.9 * len(trainset))
                     val_size = len(trainset) - train_size
                     
-                    _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size])
+                    # _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size])
+                    # train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size])
+                    
+                    generator1 = torch.Generator().manual_seed(9)
+                    generator2 = torch.Generator().manual_seed(9)
 
-                    train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size])
+                    _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size], generator = generator1)
+                    train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size], generator = generator2)
                 elif DATASET == "Rsna":
                     ##RSNA Dataset
                     train_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="train", transform=train_transform)

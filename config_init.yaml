@@ -19,8 +19,8 @@ datasets: &DATASET_OPTIONS
   - &CIFAR Cifar
   - &RSNA Rsna
 
-NUM_CLASSES: 2 #2 for RSNA, 10 for CIFAR
-DATASET: *RSNA
+NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
+DATASET: *CIFAR
 
 RSNA_PATH: "dataset/rsna_18"
 

@@ -27,8 +27,8 @@ from utils import load_model
 
 
 config = yaml.load(open('config_init.yaml', 'r'), Loader=yaml.FullLoader)
-
-
+print(config)
+# breakpoint()
 run = wandb.init(entity='biomed', project='model_soups', config=config)
 
 
@@ -55,7 +55,6 @@ CUDA_DEVICE = int(config["CUDA_DEVICE"])
 DEVICE = torch.device(f"cuda:{CUDA_DEVICE}" if torch.cuda.is_available() else 'cpu')
 
 print(f"Using {DEVICE} device")
-
 
 def START_seed():
     seed = 9
@@ -103,9 +102,11 @@ def main():
         train_size = int(0.9 * len(trainset))
         val_size = len(trainset) - train_size
         
-        _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size])
+        generator1 = torch.Generator().manual_seed(9)
+        generator2 = torch.Generator().manual_seed(9)
 
-        train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size])
+        _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size], generator = generator1)
+        train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size], generator = generator2)
 
     elif DATASET == "Rsna":
         ##RSNA Dataset
