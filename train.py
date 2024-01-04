@@ -6,7 +6,9 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import torchvision
+import argparse
 
+from torchvision.transforms.v2 import AutoAugmentPolicy, functional as F, InterpolationMode, Transform
 
 from torchvision.transforms import v2
 torchvision.disable_beta_transforms_warning()
@@ -14,6 +16,7 @@ torchvision.disable_beta_transforms_warning()
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+from torch.utils.data.dataset import Subset
 
 from utils import EarlyStopper
 
@@ -26,9 +29,14 @@ from dataset import RSNADataset
 from utils import load_model
 
 
-config = yaml.load(open('config_init.yaml', 'r'), Loader=yaml.FullLoader)
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', type=str, default='./configs/config_init.yaml', metavar='DIR', help='configs')
+
+args = parser.parse_args()
+
+
+config = yaml.load(open(args.config, 'r'), Loader=yaml.FullLoader)
 print(config)
-# breakpoint()
 run = wandb.init(entity='biomed', project='model_soups', config=config)
 
 
@@ -50,14 +58,19 @@ PRETRAINED = config["PRETRAINED"]
 DATASET = config["DATASET"]
 RSNA_CSV = config["RSNA_CSV"]
 RSNA_PATH = config["RSNA_PATH"]
+CIFAR_PATH = config["CIFAR_PATH"]
+CIFAR_INDICES = config["CIFAR_INDICES"]
+
+SAVE_DIR = config["SAVE_DIR"]
+
 CUDA_DEVICE = int(config["CUDA_DEVICE"])
 
 DEVICE = torch.device(f"cuda:{CUDA_DEVICE}" if torch.cuda.is_available() else 'cpu')
 
 print(f"Using {DEVICE} device")
 
-def START_seed():
-    seed = 9
+def START_seed(seed_value=9):
+    seed = seed_value
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
@@ -71,49 +84,62 @@ def main():
     #run id is date and time of the run
     run_id = time.strftime("%Y-%m-%d_%H-%M-%S")
 
-    if not os.path.exists("./runs"):
-        os.mkdir("./runs")
+    if not os.path.exists(SAVE_DIR):
+        os.makedirs(SAVE_DIR)
     #create folder for this run in runs folder
-    os.mkdir("./runs/" + run_id)
+    os.mkdir(SAVE_DIR + run_id)
 
-    save_dir = "./runs/" + run_id
+    save_dir = SAVE_DIR + run_id
     
 
     #load data
     train_transform = v2.Compose([
-        v2.ToTensor(),
         v2.RandomRotation(degrees=(-70, 70)),
-        v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.7, 1.2), antialias=True),
+        v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.7, 1.2), antialias=True, interpolation = InterpolationMode.BILINEAR),
+        v2.ToTensor(),
         v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
     ])
 
     val_transform = transforms.Compose([
-        v2.ToTensor(),
         v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
+        v2.ToTensor(),
         v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
         ])
 
-    if DATASET == "Cifar":
+    if DATASET == "Cifar10":
         ##Cifar Dataset
-        trainset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=train_transform)
-        valset = torchvision.datasets.CIFAR10(root='./dataset', train=True, transform=val_transform)
-        test_dataset = torchvision.datasets.CIFAR10(root='./dataset', train=False, transform=val_transform)
+        trainset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=train_transform)
+        valset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=val_transform)
+        test_dataset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=False, transform=val_transform)
 
-        train_size = int(0.9 * len(trainset))
-        val_size = len(trainset) - train_size
+        # train_size = int(0.9 * len(trainset))
+        # val_size = len(trainset) - train_size
         
-        generator1 = torch.Generator().manual_seed(9)
-        generator2 = torch.Generator().manual_seed(9)
+        # generator1 = torch.Generator().manual_seed(9)
+        # generator2 = torch.Generator().manual_seed(9)
 
-        _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size], generator = generator1)
-        train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size], generator = generator2)
+        # _, val_dataset = torch.utils.data.random_split(valset, [train_size, val_size], generator = generator1)
+        # train_dataset, _ = torch.utils.data.random_split(trainset, [train_size, val_size], generator = generator2)
 
+        idxs = np.load(CIFAR_INDICES).astype('int')
+        val_indices = []
+        train_indices = []
+        
+        for i in range(len(idxs)):
+            if idxs[i]:
+                val_indices.append(i)
+            else:
+                train_indices.append(i)
+
+        val_dataset = Subset(valset, val_indices)
+        train_dataset = Subset(trainset, train_indices)
+        print(len(val_dataset), len(train_dataset))
+        
+    
     elif DATASET == "Rsna":
         ##RSNA Dataset
         train_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="train", transform=train_transform)
-
         val_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="val", transform=val_transform)
-        
         test_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="test", transform=val_transform)
 
 
@@ -124,7 +150,6 @@ def main():
 
     #load model
     model = get_model(MODEL, PRETRAINED, num_classes=NUM_CLASSES)
-
 
     model.to(DEVICE)
     torch.compile(model)

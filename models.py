@@ -1,7 +1,8 @@
 from torch import nn
 import torch
 import torch.nn.functional as F
-
+import timm
+import torchxrayvision as xrv
 
 from torchvision.models import resnet50
 from torchvision.models import ResNet50_Weights
@@ -282,7 +283,7 @@ def get_MLP(pretrained=False):
     
     return model
 
-def get_resnet50(pretrained=False):
+def get_resnet50(pretrained=False,num_classes=10):
     if pretrained:
         model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
 
@@ -290,12 +291,12 @@ def get_resnet50(pretrained=False):
         for param in model.parameters():
             param.requires_grad = False
 
-        for param in model.layer4.parameters():
-            param.requires_grad = True
+        # for param in model.layer4.parameters():
+        #     param.requires_grad = True
 
-        for i, (name, layer) in enumerate(model.layer4.named_modules()):
-            if isinstance(layer, torch.nn.Conv2d):
-                layer.reset_parameters()
+        # for i, (name, layer) in enumerate(model.layer4.named_modules()):
+        #     if isinstance(layer, torch.nn.Conv2d):
+        #         layer.reset_parameters()
 
     else:
         model = resnet50()
@@ -306,15 +307,16 @@ def get_resnet50(pretrained=False):
     # model.avgpool = torch.nn.Identity()
 
     model.fc = torch.nn.Sequential(
-        torch.nn.Dropout(p=0.2),
+        # torch.nn.Dropout(p=0.2),
         torch.nn.Linear(
             in_features=2048,
-            out_features=1,
+            out_features=num_classes,
             bias=True
         )
     )
     
     return model
+
 
 
 def get_resnet18(pretrained=False, num_classes=10):
@@ -564,10 +566,113 @@ def get_convnext_tiny(pretrained=False):
 
     return model
     
+def get_deitS(pretrained=False,num_classes=10):
+    if pretrained:
+        model = timm.create_model('deit_base_patch16_224.fb_in1k',pretrained=True)
+
+        # Freeze model weights
+        for param in model.parameters():
+            param.requires_grad = False
+
+        # for param in model.layer4.parameters():
+        #     param.requires_grad = True
+
+        # for i, (name, layer) in enumerate(model.layer4.named_modules()):
+        #     if isinstance(layer, torch.nn.Conv2d):
+        #         layer.reset_parameters()
+
+    else:
+        model = timm.create_model('deit_base_patch16_224.fb_in1k',pretrained=False)
+    
+
+    # Add on fully connected layers for the output of our model
+
+    # model.avgpool = torch.nn.Identity()
+
+    model.head = torch.nn.Sequential(
+        # torch.nn.Dropout(p=0.2),
+        torch.nn.Linear(
+            in_features=model.head.in_features,
+            out_features=num_classes,
+            bias=True
+        )
+    )
+    
+    return model
+
+
+def get_medical_densnet121(pretrained=False,num_classes=2):
+    if pretrained:
+        model = xrv.models.DenseNet(weights="densenet121-res224-mimic_ch")
+
+        # Freeze model weights
+        for param in model.parameters():
+            param.requires_grad = False
+
+        # for param in model.layer4.parameters():
+        #     param.requires_grad = True
+
+        # for i, (name, layer) in enumerate(model.layer4.named_modules()):
+        #     if isinstance(layer, torch.nn.Conv2d):
+        #         layer.reset_parameters()
+
+    else:
+        model = xrv.models.DenseNet(weights="densenet121-res224-mimic_ch")
+    
+
+    # Add on fully connected layers for the output of our model
+
+    # model.avgpool = torch.nn.Identity()
+
+    model.fc = torch.nn.Sequential(
+        # torch.nn.Dropout(p=0.2),
+        torch.nn.Linear(
+            in_features=1024,
+            out_features=num_classes,
+            bias=True
+        )
+    )
+    
+    return model
+
+
+def get_densnet121(pretrained=False,num_classes=2):
+    if pretrained:
+        model = densenet121(weights=DenseNet121_Weights.IMAGENET1K_V2)
+
+        # Freeze model weights
+        for param in model.parameters():
+            param.requires_grad = False
+
+        # for param in model.layer4.parameters():
+        #     param.requires_grad = True
+
+        # for i, (name, layer) in enumerate(model.layer4.named_modules()):
+        #     if isinstance(layer, torch.nn.Conv2d):
+        #         layer.reset_parameters()
+
+    else:
+        model = densenet121()
+    
+
+    # Add on fully connected layers for the output of our model
+
+    # model.avgpool = torch.nn.Identity()
+
+    model.fc = torch.nn.Sequential(
+        # torch.nn.Dropout(p=0.2),
+        torch.nn.Linear(
+            in_features=1024,
+            out_features=num_classes,
+            bias=True
+        )
+    )
+    
+    return model
 
 def get_model(model_name, pretrained=False, num_classes=10):
     if model_name == "ResNet50":
-        return get_resnet50(pretrained)
+        return get_resnet50(pretrained, num_classes)
     elif model_name == "ResNet18":
         return get_resnet18(pretrained, num_classes)
     elif model_name == "ResNet101":
@@ -582,6 +687,13 @@ def get_model(model_name, pretrained=False, num_classes=10):
         return get_squeezenet1_1(pretrained)
     elif model_name == "ConvNeXtTiny":
         return get_convnext_tiny(pretrained)
+    elif model_name == "DeiT-S":
+        return get_deitS(pretrained, num_classes)
+    elif model_name == "MIMIC-DenseNet121":
+        return get_medical_densnet121(pretrained, num_classes)
+    elif model_name == "DenseNet121":
+        return get_densnet121(pretrained, num_classes)
+        
     elif model_name == "LeNet5":
         return LeNet5(2)
     elif model_name == "CNN_PRO":
