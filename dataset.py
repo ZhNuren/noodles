@@ -5,7 +5,7 @@ import cv2
 from torch.utils.data import Dataset
 
 import numpy as np
-
+from torchxrayvision.datasets import normalize
 import torch
 
 import pandas as pd
@@ -105,12 +105,14 @@ class RSNADataset(Dataset):
 
     def __getitem__(self, idx):
         # print('trainnnnnnnnnnnnnn',self.data.iloc[idx, 8])
-        image_folder = os.path.join(self.data_folder, 'train')
+        image_folder = os.path.join(self.data_folder, 'train_v3')
         # print('imageeeeeeeeeee', image_folder)
-        image_path = os.path.join(image_folder, self.data.iloc[idx, 1] + '.jpg')
+        image_path = os.path.join(image_folder, self.data.iloc[idx, 1] + '.pt')
         # print(image_path)
-        image = Image.open(image_path)#.convert('L')
+        image = torch.load(image_path)#.convert('L')
         target = int(self.data.iloc[idx, 7])
+        image = normalize(image, maxval=255, reshape=True)
+
         # print(target)
         if self.transform:
             image = self.transform(image)
