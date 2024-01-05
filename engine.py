@@ -105,7 +105,8 @@ def trainer(
         epochs: int,
         save_dir: str,
         early_stopper=None,
-        linear_probing_epochs=None
+        linear_probing_epochs=None,
+        start_epoch = 1
 ):
     """
     Train and evaluate model.
@@ -132,7 +133,7 @@ def trainer(
     }
     best_val_loss = 1e10
 
-    for epoch in range(1, epochs + 1):
+    for epoch in range(start_epoch, epochs + 1):
 
         if linear_probing_epochs is not None:
             if epoch == linear_probing_epochs:

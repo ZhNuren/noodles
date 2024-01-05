@@ -28,6 +28,8 @@ from torchvision.models import SqueezeNet1_1_Weights
 from torchvision.models import convnext_tiny
 from torchvision.models import ConvNeXt_Tiny_Weights
 
+from torchvision.models import densenet121
+from torchvision.models import DenseNet121_Weights
 
 from torchvision.models import vgg16
 from torchvision.models import VGG16_Weights
@@ -624,7 +626,7 @@ def get_medical_densnet121(pretrained=False,num_classes=2):
 
     # model.avgpool = torch.nn.Identity()
 
-    model.fc = torch.nn.Sequential(
+    model.classifier = torch.nn.Sequential(
         # torch.nn.Dropout(p=0.2),
         torch.nn.Linear(
             in_features=1024,
@@ -638,7 +640,7 @@ def get_medical_densnet121(pretrained=False,num_classes=2):
 
 def get_densnet121(pretrained=False,num_classes=2):
     if pretrained:
-        model = densenet121(weights=DenseNet121_Weights.IMAGENET1K_V2)
+        model = densenet121(weights=DenseNet121_Weights.IMAGENET1K_V1)
 
         # Freeze model weights
         for param in model.parameters():
@@ -659,7 +661,7 @@ def get_densnet121(pretrained=False,num_classes=2):
 
     # model.avgpool = torch.nn.Identity()
 
-    model.fc = torch.nn.Sequential(
+    model.classifier = torch.nn.Sequential(
         # torch.nn.Dropout(p=0.2),
         torch.nn.Linear(
             in_features=1024,

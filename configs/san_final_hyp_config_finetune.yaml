@@ -10,14 +10,9 @@ PATIENCE : 5
 IMAGE_SIZE : 224
 
 
-MODEL: DeiT-S
 PRETRAINED: False
 LOSS: CrossEntropyLoss
 
-CUDA_DEVICE: 1
-
-
-RUN_NAME: "./runs/san-models_v1/cifar_final_hyp/deit-S/2024-01-05_00-15-17/" #CIFAR
 # RUN_NAME: "2023-12-26_21-49-40" #RSNA
 
 
@@ -35,13 +30,22 @@ datasets: &DATASET_OPTIONS
   - &CIFAR100 Cifar100
   - &RSNA Rsna
 
-NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
-DATASET: *CIFAR10
+
 
 RSNA_PATH: "dataset/rsna_18"
 CIFAR_PATH: "./dataset/cifar"
 CIFAR_INDICES: "./dataset/cifar/cifar1098_idxs.npy"
 RSNA_CSV: "dataset/rsna_18/csv/final_dataset_wo_not_normal_cases.csv"
-SAVE_DIR: "./runs/san-finetune/cifar_final_hyp/deit-S/"
+
+######CHANGE ONLY THIS#########
+SAVE_DIR: "./runs/san_final_hyp_models/san-finetune/cifar_final_hyp/densenet-121/"
+RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/cifar_final_hyp/densenet-121/2024-01-05_15-32-43/" #CIFAR
+CUDA_DEVICE: 1
+NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
+DATASET: *CIFAR10
+MODEL: DenseNet121
+RESUME_PATH: ""
+
+
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
 

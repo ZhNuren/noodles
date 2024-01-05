@@ -1,6 +1,6 @@
 from engine import trainer, val_step
 from utils import plot_results
-from model import get_model
+from models import get_model
 
 import torch
 from torch.utils.data import DataLoader
