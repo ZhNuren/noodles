@@ -1,8 +1,6 @@
 LEARNING_RATE : 1e-3
-LEARNING_SCHEDULER : CosineAnnealingLR
 BATCH_SIZE : 128
 NUM_WORKERS : 16
-NUM_EPOCHS : 50
 LINEAR_PROBING: False
 PROBING_EPOCHS : 30
 PATIENCE : 5
@@ -29,21 +27,33 @@ datasets: &DATASET_OPTIONS
   - &CIFAR10 Cifar10
   - &CIFAR100 Cifar100
   - &RSNA Rsna
+  - &HAM HAM
+  - &APTOS APTOS
 
-
-
-RSNA_PATH: "dataset/rsna_18"
+RSNA_PATH: "./dataset/rsna18"
 CIFAR_PATH: "./dataset/cifar"
 CIFAR_INDICES: "./dataset/cifar/cifar1098_idxs.npy"
-RSNA_CSV: "dataset/rsna_18/csv/final_dataset_wo_not_normal_cases.csv"
+RSNA_CSV: "./dataset/rsna18/csv/final_dataset_wo_not_normal_cases.csv"
+HAM_TRAIN_FOLDER : "./dataset/ISIC/ISIC2018_Task3_Training_Input/"
+HAM_VAL_FOLDER : "./dataset/ISIC/ISIC2018_Task3_Validation_Input/"
+HAM_TEST_FOLDER : "./dataset/ISIC/ISIC2018_Task3_Test_Input/"
+HAM_TRAIN_CSV : "./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv"
+HAM_VAL_CSV : "./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv"
+HAM_TEST_CSV : "./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv"
+APTOS_FOLDER: "./dataset/224_data/DR/aptos/"
+APTOS_CSV: "./dataset/224_data/DR/aptos/aptos_dataset_splits.csv"
+#source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
 
 ######CHANGE ONLY THIS#########
-SAVE_DIR: "./runs/san_final_hyp_models/san-finetune/cifar_final_hyp/densenet-121/"
-RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/cifar_final_hyp/densenet-121/2024-01-05_15-32-43/" #CIFAR
-CUDA_DEVICE: 1
-NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
-DATASET: *CIFAR10
-MODEL: DenseNet121
+NUM_EPOCHS : 50
+PRETRAINING: ImageNet
+LEARNING_SCHEDULER : CosineAnnealingLR
+SAVE_DIR: "./runs/san_final_hyp_models/san-finetune/aptos_final_hyp/resnet50_imagenet/"
+RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/aptos_final_hyp/resnet50_imagenet/2024-01-10_02-28-57/" #CIFAR
+CUDA_DEVICE: 0
+NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR
+DATASET: *APTOS
+MODEL: ResNet50
 RESUME_PATH: ""
 
 

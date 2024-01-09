@@ -12,7 +12,7 @@ from torchvision.transforms.v2 import AutoAugmentPolicy, functional as F, Interp
 
 from torchvision.transforms import v2
 torchvision.disable_beta_transforms_warning()
-
+import torchxrayvision as xrv
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -25,7 +25,7 @@ import json
 import time
 import os
 import wandb
-from dataset import RSNADataset
+from dataset import RSNADataset, HAM10000Dataset,AptosDataset
 from utils import load_model
 
 
@@ -55,12 +55,28 @@ IMAGE_SIZE = int(config["IMAGE_SIZE"])
 MODEL = config["MODEL"]
 PRETRAINED = config["PRETRAINED"]
 
+
+
 DATASET = config["DATASET"]
 RSNA_CSV = config["RSNA_CSV"]
 RSNA_PATH = config["RSNA_PATH"]
 CIFAR_PATH = config["CIFAR_PATH"]
 CIFAR_INDICES = config["CIFAR_INDICES"]
 
+HAM_TRAIN_CSV = str(config["HAM_TRAIN_CSV"])
+HAM_VAL_CSV = str(config["HAM_VAL_CSV"])
+HAM_TEST_CSV = str(config["HAM_TEST_CSV"])
+HAM_TRAIN_FOLDER = str(config["HAM_TRAIN_FOLDER"])
+HAM_VAL_FOLDER = str(config["HAM_VAL_FOLDER"])
+HAM_TEST_FOLDER = str(config["HAM_TEST_FOLDER"])
+
+
+APTOS_CSV = str(config["APTOS_CSV"])
+APTOS_FOLDER = str(config["APTOS_FOLDER"])
+
+
+
+PRETRAINING = config["PRETRAINING"]
 SAVE_DIR = config["SAVE_DIR"]
 
 CUDA_DEVICE = int(config["CUDA_DEVICE"])
@@ -93,24 +109,35 @@ def main():
     
 
     #load data
-    train_transform = v2.Compose([
-        v2.RandomRotation(degrees=(-70, 70)),
-        v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.7, 1.2), antialias=True, interpolation = InterpolationMode.BILINEAR),
-        v2.ToTensor(),
-        v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
-    ])
-
-    val_transform = transforms.Compose([
-        v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
-        v2.ToTensor(),
-        v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
+    if PRETRAINING == "ImageNet":
+        train_transform = v2.Compose([
+            v2.RandomRotation(degrees=(-70, 70)),
+            v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.7, 1.2), antialias=True, interpolation = InterpolationMode.BILINEAR),
+            v2.ToTensor(),
+            v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
         ])
+
+        val_transform = transforms.Compose([
+            v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
+            v2.ToTensor(),
+            v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
+            ])
+    else:
+        train_transform = v2.Compose([
+            v2.RandomRotation(degrees=(-70, 70)),
+            v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.7, 1.2), antialias=True, interpolation = InterpolationMode.BILINEAR),
+        ])
+
+        val_transform = transforms.Compose([
+            v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
+            ])
+
 
     if DATASET == "Cifar10":
         ##Cifar Dataset
-        trainset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=train_transform)
-        valset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=val_transform)
-        test_dataset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=False, transform=val_transform)
+        trainset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=train_transform, download=True)
+        valset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=val_transform, download=True)
+        test_dataset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=False, transform=val_transform, download=True)
 
         # train_size = int(0.9 * len(trainset))
         # val_size = len(trainset) - train_size
@@ -133,21 +160,31 @@ def main():
 
         val_dataset = Subset(valset, val_indices)
         train_dataset = Subset(trainset, train_indices)
-        print(len(val_dataset), len(train_dataset))
         
     
     elif DATASET == "Rsna":
         ##RSNA Dataset
-        train_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="train", transform=train_transform)
-        val_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="val", transform=val_transform)
-        test_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="test", transform=val_transform)
+        train_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="train", pretraining = PRETRAINING, transform=train_transform)
+        val_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="val", pretraining = PRETRAINING, transform=val_transform)
+        test_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="test", pretraining = PRETRAINING, transform=val_transform)
 
+    elif DATASET == "HAM":
+        ##RSNA Dataset
+        train_dataset = HAM10000Dataset(csv_file=HAM_TRAIN_CSV, data_folder=HAM_TRAIN_FOLDER, pretraining = PRETRAINING, transform=train_transform)
+        val_dataset = HAM10000Dataset(csv_file=HAM_VAL_CSV, data_folder=HAM_VAL_FOLDER, pretraining = PRETRAINING, transform=val_transform)
+        test_dataset = HAM10000Dataset(csv_file=HAM_TEST_CSV, data_folder=HAM_TEST_FOLDER, pretraining = PRETRAINING, transform=val_transform)
 
+    elif DATASET == "APTOS":
+        ##RSNA Dataset
+        train_dataset = AptosDataset(csv_file=APTOS_CSV, data_folder=APTOS_FOLDER, split = 'train', pretraining = PRETRAINING, transform=train_transform)
+        val_dataset = AptosDataset(csv_file=APTOS_CSV, data_folder=APTOS_FOLDER, split = 'val', pretraining = PRETRAINING, transform=val_transform)
+        test_dataset = AptosDataset(csv_file=APTOS_CSV, data_folder=APTOS_FOLDER, split = 'test', pretraining = PRETRAINING, transform=val_transform)
+
+    print(len(val_dataset), len(train_dataset))
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=12)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=12)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=12)
-
     #load model
     model = get_model(MODEL, PRETRAINED, num_classes=NUM_CLASSES)
 
@@ -211,10 +248,13 @@ def main():
     model.to(DEVICE)
     torch.compile(model)
 
-    test_loss, test_acc = val_step(model, test_loader, loss, DEVICE)
+    test_loss, test_acc, test_f1, test_recall = val_step(model, test_loader, loss, DEVICE)
 
     config["test_acc"] = test_acc
     config["test_loss"] = test_loss
+    config["test_f1"] = test_f1
+    config["test_recall"] = test_recall
+    
 
     wandb.log({"test_loss": test_loss, "test_acc": test_acc})
 

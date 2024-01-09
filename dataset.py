@@ -3,7 +3,7 @@ import os
 import cv2
 
 from torch.utils.data import Dataset
-
+import torchxrayvision as xrv
 import numpy as np
 from torchxrayvision.datasets import normalize
 import torch
@@ -89,13 +89,13 @@ class DogsCatsTest(Dataset):
 
 
 class RSNADataset(Dataset):
-    def __init__(self, csv_file, data_folder, split, transform=None):
+    def __init__(self, csv_file, data_folder, split, pretraining, transform=None):
         self.data = pd.read_csv(csv_file)
         self.data_folder = data_folder
         self.transform = transform
         self.split = split
         # self.data = self.data[self.data['class'] != 'No Lung Opacity / Not Normal']
-
+        self.pretraining = pretraining
         # Filter the data based on the specified split
         self.data = self.data[self.data['split'] == split]
         # print(self.data)
@@ -109,11 +109,72 @@ class RSNADataset(Dataset):
         # print('imageeeeeeeeeee', image_folder)
         image_path = os.path.join(image_folder, self.data.iloc[idx, 1] + '.pt')
         # print(image_path)
+        # image = np.array(torch.load(image_path))
         image = torch.load(image_path)#.convert('L')
         target = int(self.data.iloc[idx, 7])
-        image = normalize(image, maxval=255, reshape=True)
-
+        # image = normalize(image, maxval=255, reshape=False)
         # print(target)
+        # image = xrv.datasets.ToPILImage()(image)
+    
         if self.transform:
             image = self.transform(image)
+
+        if self.pretraining != "ImageNet":
+            image = normalize(np.array(image), maxval=255, reshape=True)        
+        # print(np.array(image))
         return image, target
+    
+
+
+import pandas as pd
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+from PIL import Image
+
+class HAM10000Dataset(Dataset):
+    def __init__(self, csv_file, data_folder, pretraining, transform=None):
+        self.data_frame = pd.read_csv(csv_file)
+        self.root_dir = data_folder
+        self.transform = transform
+        self.pretraining = pretraining
+
+    def __len__(self):
+        return len(self.data_frame)
+
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        img_name = self.data_frame.iloc[idx, 0]
+        img_path = f"{self.root_dir}/{img_name}.jpg"
+        image = Image.open(img_path)
+
+        label = self.data_frame.iloc[idx, 1:].values.astype(np.float32)
+        label = np.argmax(label)
+
+        if self.transform:
+            image = self.transform(image)
+        return image, label
+
+
+
+
+class AptosDataset(Dataset):
+    def __init__(self, csv_file, data_folder, split, pretraining, transform=None):
+        self.data = pd.read_csv(csv_file)
+        self.root_dir = data_folder
+        self.transform = transform
+        self.split = split
+        self.data = self.data.loc[self.data["split"] == self.split]
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        img_name = os.path.join(self.root_dir, str(self.data.iloc[idx, 1]), str(self.data.iloc[idx, 0]))
+        image = Image.open(img_name)
+        label = self.data.iloc[idx, 1]
+        if self.transform:
+            image = self.transform(image)
+        
+        return image, label

@@ -34,6 +34,10 @@ from torchvision.models import DenseNet121_Weights
 from torchvision.models import vgg16
 from torchvision.models import VGG16_Weights
 
+import utils
+import clip
+
+
 class LeNet5(nn.Module):
     def __init__(self, num_classes):
         super(LeNet5, self).__init__()
@@ -606,11 +610,9 @@ def get_deitS(pretrained=False,num_classes=10):
 def get_medical_densnet121(pretrained=False,num_classes=2):
     if pretrained:
         model = xrv.models.DenseNet(weights="densenet121-res224-mimic_ch")
-
         # Freeze model weights
         for param in model.parameters():
             param.requires_grad = False
-
         # for param in model.layer4.parameters():
         #     param.requires_grad = True
 
@@ -626,15 +628,11 @@ def get_medical_densnet121(pretrained=False,num_classes=2):
 
     # model.avgpool = torch.nn.Identity()
 
-    model.classifier = torch.nn.Sequential(
-        # torch.nn.Dropout(p=0.2),
-        torch.nn.Linear(
+    model.classifier = torch.nn.Sequential(torch.nn.Linear(
             in_features=1024,
             out_features=num_classes,
             bias=True
-        )
-    )
-    
+        ))
     return model
 
 
@@ -672,7 +670,21 @@ def get_densnet121(pretrained=False,num_classes=2):
     
     return model
 
-def get_model(model_name, pretrained=False, num_classes=10):
+
+
+def get_CLIP(classnames, pretrained=False, num_classes=10):
+    base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit = False)
+    template = utils.openai_imagenet_template
+    clf = utils.zeroshot_classifier(base_model, classnames, template, 'cuda')
+    feature_dim = base_model.visual.output_dim
+    model = utils.ModelWrapper(base_model, feature_dim, num_classes, normalize=True, initial_weights=clf)
+    for p in model.parameters():
+        p.data = p.data.float()
+
+    return model
+
+
+def get_model(model_name, pretrained=False, num_classes=10, classnames = None):
     if model_name == "ResNet50":
         return get_resnet50(pretrained, num_classes)
     elif model_name == "ResNet18":
@@ -695,6 +707,8 @@ def get_model(model_name, pretrained=False, num_classes=10):
         return get_medical_densnet121(pretrained, num_classes)
     elif model_name == "DenseNet121":
         return get_densnet121(pretrained, num_classes)
+    elif model_name == "CLIP":
+        return get_CLIP(classnames, pretrained, num_classes)
         
     elif model_name == "LeNet5":
         return LeNet5(2)
