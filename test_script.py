@@ -173,10 +173,22 @@ table.loc[4] = {'Model Name': 'Greedy',
                                     'Learning Rate': 'None',
                                     'SEED': 'None'}
 
+
+
+#if there is no test directory create it
+if not os.path.exists("test"):
+    os.makedirs("test")
+
+#if there is no folder named after dataset inside test directory create it
+if not os.path.exists(os.path.join("test", DATASET)):
+    os.makedirs(os.path.join("test", DATASET))
+
+test_save_path = os.path.join("test", DATASET)
+
 #save the table to csv without index
-table.to_csv("test_results.csv", index=False)
+table.to_csv(os.path.join(test_save_path, "ALL.csv"), index=False)
 print(table.to_markdown())
-print("Table saved to test_results.csv")
+print("Table saved to ALL.csv")
 
 lr_state_dicts = state_dicts.copy()
 
@@ -186,7 +198,9 @@ test_results_copy = results_test_df.copy()
 
 
 
+
 for j in range(3,8):
+    
     indexes = []
     for i in val_results_copy.iterrows():
         if f"-0{j}" in i[1]['Learning Rate']:
@@ -203,6 +217,10 @@ for j in range(3,8):
     #remove from lr_state_dicts all the state_dicts with indexes
     lr_state_dicts = [i for j, i in enumerate(lr_state_dicts) if j not in indexes]
 
+    #if state_dict is empty break
+    if len(lr_state_dicts) == 0:
+        print("No more models to analyze!")
+        break
 
     print(f"Models with Learning rate -0{j} removed ...")
 
@@ -268,17 +286,8 @@ for j in range(3,8):
                                         'SEED': 'None'}
 
     #save the table to csv without index
-    table.to_csv(f"test_results{j}.csv", index=False)
+    table.to_csv(os.path.join(test_save_path, f"LR<-0{j}.csv"), index=False)
     print(table.to_markdown())
-    print(f"Table saved to test_results{j}.csv")
+    print(f"Table saved to LR<-0{j}.csv")
 
             
-
-
-
-
-
-
-
-#OUT ALL THE TEST RESULTS AND CORRESPONDING HYPERPARAMETERS to the table
-#1st best, 2nd best, worst, uniform and greedy
