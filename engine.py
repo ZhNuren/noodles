@@ -1,8 +1,6 @@
 import torch
 
 from tqdm import tqdm
-
-from utils import save_model
 import os
 import wandb
 import json

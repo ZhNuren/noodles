@@ -1,0 +1,29 @@
+CUDA_DEVICE: 2
+
+datasets: &DATASET_OPTIONS
+  - &CIFAR10 Cifar10
+  - &CIFAR100 Cifar100
+  - &RSNA Rsna
+  - &HAM HAM
+  - &APTOS APTOS
+
+paths: &PATH_OPTIONS
+  - &CIFAR_PATH ./dataset/cifar""./dataset/cifar/cifar1098_idxs.npy
+  - &RSNA_PATH ./dataset/rsna18""./dataset/rsna18/csv/final_dataset_wo_not_normal_cases.csv
+  - &HAM_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""./dataset/ISIC/ISIC2018_Task3_Validation_Input/""./dataset/ISIC/ISIC2018_Task3_Test_Input/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv
+  - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
+
+
+WEIGHT_PATH: "./runs/san_initial_runs/cifar/2024-01-04_02-56-36"
+
+NUM_WORKERS : 16
+BATCH_SIZE: 128
+IMAGE_SIZE: 224
+
+
+PRETRAINING: ImageNet
+
+DATASET: *CIFAR10
+PATH: *CIFAR_PATH
+
+NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
