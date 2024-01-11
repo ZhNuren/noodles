@@ -127,9 +127,6 @@ uniform_model.to(DEVICE)
 
 uniform_test_loss, uniform_test_acc, uniform_test_f1, uniform_test_recall = val_step(uniform_model, test_loader, loss, DEVICE)
 
-
-# uniform_val_loss, uniform_val_acc, uniform_val_f1, uniform_val_recall = val_step(uniform_model, val_loader, loss, DEVICE)
-
 #greedy
 print("Greedy souping ...")
 model = get_model(model_config["MODEL"], num_classes=NUM_CLASSES)
@@ -139,21 +136,9 @@ greedy_model = greedy_souping(state_dicts, val_f1, model_config["MODEL"], NUM_CL
 
 greedy_model.to(DEVICE)
 
-# greedy_val_loss, greedy_val_acc, greedy_val_f1, greedy_val_recall = val_step(greedy_model, val_loader, loss, DEVICE)
-#TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTESTTTTTTTTTTTTTTTTTTTTTTTTT
-
-
-#test all the 48 models - done
-
-
-#take the unifrom model from above and test it
-
 greedy_test_loss, greedy_test_acc, greedy_test_f1, greedy_test_recall = val_step(greedy_model, test_loader, loss, DEVICE)
 
-# take the greedy souped model and test it
-
-#create following pandas table columns(F1, Accuracy, Recall, Augmentation, Learning Rate, SEED)
-
+#saving results in table
 print("Creating table ...")
 table = pd.DataFrame(columns=['Model Name', 'Test Accuracy', 'Test F1', 'Test Recall', 'Augmentation', 'Learning Rate', 'SEED'])
 
@@ -192,6 +177,104 @@ table.loc[4] = {'Model Name': 'Greedy',
 table.to_csv("test_results.csv", index=False)
 print(table.to_markdown())
 print("Table saved to test_results.csv")
+
+lr_state_dicts = state_dicts.copy()
+
+val_results_copy = results_val_df.copy()
+
+test_results_copy = results_test_df.copy()
+
+
+
+for j in range(3,8):
+    indexes = []
+    for i in val_results_copy.iterrows():
+        if f"-0{j}" in i[1]['Learning Rate']:
+            indexes.append(i[0])
+    
+    #remove from val_results_copy all the rows with indexes and reset the index
+    val_results_copy = val_results_copy.drop(indexes).reset_index(drop=True)
+    test_results_copy = test_results_copy.drop(indexes).reset_index(drop=True)
+
+    sorted_val = val_results_copy.sort_values(by= 'Val F1',ascending=False)
+    sorted_test = test_results_copy.sort_values(by= 'Test F1',ascending=False)
+
+
+    #remove from lr_state_dicts all the state_dicts with indexes
+    lr_state_dicts = [i for j, i in enumerate(lr_state_dicts) if j not in indexes]
+
+
+    print(f"Models with Learning rate -0{j} removed ...")
+
+    print(f"Best model val F1: {sorted_val.iloc[0]['Val F1']}")
+    print(f"Second best model val F1: {sorted_val.iloc[1]['Val F1']}")
+    print(f"Worst model val F1: {sorted_val.iloc[-1]['Val F1']}")
+    #UNIFORM
+    print("Unifrom souping ...")
+    alphal = [1 / len(lr_state_dicts) for i in range(len(lr_state_dicts))]
+
+    model = get_model(model_config["MODEL"], num_classes=NUM_CLASSES)
+
+    uniform_model = souping(model, lr_state_dicts, alphal)
+
+    uniform_model.to(DEVICE)
+
+    uniform_test_loss, uniform_test_acc, uniform_test_f1, uniform_test_recall = val_step(uniform_model, test_loader, loss, DEVICE)
+
+    #greedy
+    print("Greedy souping ...")
+    model = get_model(model_config["MODEL"], num_classes=NUM_CLASSES)
+
+    val_f1 = list(val_results_copy['Val F1'])
+    greedy_model = greedy_souping(lr_state_dicts, val_f1, model_config["MODEL"], NUM_CLASSES, val_loader, loss, DEVICE)
+
+    greedy_model.to(DEVICE)
+
+    greedy_test_loss, greedy_test_acc, greedy_test_f1, greedy_test_recall = val_step(greedy_model, test_loader, loss, DEVICE)
+
+    #saving results in table
+    print("Creating table ...")
+    table = pd.DataFrame(columns=['Model Name', 'Test Accuracy', 'Test F1', 'Test Recall', 'Augmentation', 'Learning Rate', 'SEED'])
+
+    #get best, second best and worst model from sorted_test and add them to the table
+    best_model = sorted_test.iloc[0]
+    second_best_model = sorted_test.iloc[1]
+    worst_model = sorted_test.iloc[-1]
+
+    #rename model name in best, second best and worst model
+    best_model['Model Name'] = f"Best 1: {best_model['Model Name']}"
+    second_best_model['Model Name'] = f"Best 2: {second_best_model['Model Name']}"
+    worst_model['Model Name'] = f"Worst: {worst_model['Model Name']}"
+
+    table.loc[0] = best_model
+    table.loc[1] = second_best_model
+    table.loc[2] = worst_model
+
+    #add uniform and greedy to the table
+    table.loc[3] = {'Model Name': 'Uniform',
+                                        'Test Accuracy': uniform_test_acc,
+                                        'Test F1': uniform_test_f1,
+                                        'Test Recall': uniform_test_recall,
+                                        'Augmentation': 'None',
+                                        'Learning Rate': 'None',
+                                        'SEED': 'None'}
+
+    table.loc[4] = {'Model Name': 'Greedy',
+                                        'Test Accuracy': greedy_test_acc,
+                                        'Test F1': greedy_test_f1,
+                                        'Test Recall': greedy_test_recall,
+                                        'Augmentation': 'None',
+                                        'Learning Rate': 'None',
+                                        'SEED': 'None'}
+
+    #save the table to csv without index
+    table.to_csv(f"test_results{j}.csv", index=False)
+    print(table.to_markdown())
+    print(f"Table saved to test_results{j}.csv")
+
+            
+
+
 
 
 
