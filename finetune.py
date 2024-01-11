@@ -244,11 +244,11 @@ def main():
 
                 ])
         if PRETRAINING != "ImageNet":
-            val_transform = transforms.Compose([
+            val_transform = v2.Compose([
                 v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
                 ])
         else:
-            val_transform = transforms.Compose([
+            val_transform = v2.Compose([
                 v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
                 v2.ToTensor(),
                 v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
@@ -358,7 +358,7 @@ def main():
         plot_results(results, save_dir)
 
         #append to dataframe
-        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], wandconf["NUM_EPOCHS"], wandconf["AUGMENTATION"], test_acc, test_loss]            
+        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], wandconf["SEED"], wandconf["AUGMENTATION"], test_acc, test_loss]            
 
     resultsexp.to_csv(parent_dir + "/testresults.csv", index=True)
 

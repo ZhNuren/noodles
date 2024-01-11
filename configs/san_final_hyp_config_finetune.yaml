@@ -48,13 +48,13 @@ APTOS_CSV: "./dataset/224_data/DR/aptos/aptos_dataset_splits.csv"
 NUM_EPOCHS : 50
 PRETRAINING: ImageNet
 LEARNING_SCHEDULER : CosineAnnealingLR
-SAVE_DIR: "./runs/san_final_hyp_models/san-finetune/aptos_final_hyp/resnet50_imagenet/"
-RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/aptos_final_hyp/resnet50_imagenet/2024-01-10_02-28-57/" #CIFAR
+SAVE_DIR: "./runs/san_final_hyp_models/san-finetune/cifar_final_hyp/resnet-50/"
+RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/cifar_final_hyp/resnet-50/2024-01-05_15-26-20/" #CIFAR
 CUDA_DEVICE: 0
-NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR
-DATASET: *APTOS
+NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
+DATASET: *CIFAR10
 MODEL: ResNet50
-RESUME_PATH: ""
+RESUME_PATH: "./runs/san_final_hyp_models/san-finetune/cifar_final_hyp/resnet-50/2024-01-05_17-41-27/"
 
 
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
