@@ -1,4 +1,4 @@
-CUDA_DEVICE: 2
+CUDA_DEVICE: 0
 
 datasets: &DATASET_OPTIONS
   - &CIFAR10 Cifar10
@@ -14,7 +14,7 @@ paths: &PATH_OPTIONS
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
 
 
-WEIGHT_PATH: "./runs/san_initial_runs/cifar/2024-01-04_02-56-36"
+WEIGHT_PATH: "./runs/san_final_hyp_models/san-finetune/aptos_final_hyp/resnet50_imagenet/2024-01-10_03-03-01/"
 
 NUM_WORKERS : 16
 BATCH_SIZE: 128
@@ -23,7 +23,7 @@ IMAGE_SIZE: 224
 
 PRETRAINING: ImageNet
 
-DATASET: *CIFAR10
-PATH: *CIFAR_PATH
+DATASET: *APTOS
+PATH: *APTOS_PATH
 
-NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
+NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR

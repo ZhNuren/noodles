@@ -59,7 +59,9 @@ _, val_loader, test_loader = get_dataset(DATASET, PATHS, "Minimal",
                                                         PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NUM_WORKERS)
 
 #for each folder inside WEIGHT_PATH
-for idx, folder in enumerate(os.listdir(WEIGHT_PATH)):
+for idx, folder in enumerate(sorted(os.listdir(WEIGHT_PATH))):
+    if folder.startswith('testresults'):
+        continue
     model_path = os.path.join(WEIGHT_PATH, folder)
     #read config in train_summary.json
     train_summary = json.load(open(os.path.join(model_path, "train_summary.json"), 'r'))
