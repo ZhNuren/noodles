@@ -1,4 +1,4 @@
-from engine import trainer, val_step
+from engine import reg_trainer, reg_val_step
 from utils.utils import plot_results
 from models import get_model
 
@@ -18,6 +18,7 @@ import numpy as np
 import random
 from torch.utils.data.dataset import Subset
 
+from utils.utils import EarlyStopper
 from utils.utils import EarlyStopper, get_dataset
 
 import yaml
@@ -39,6 +40,7 @@ config = yaml.load(open(args.config, 'r'), Loader=yaml.FullLoader)
 print(config)
 run = wandb.init(entity='biomed', project='model_soups', config=config)
 
+NUM_WORKERS = int(config["NUM_WORKERS"])
 
 LEARNING_RATE = float(config["LEARNING_RATE"])
 LEARNING_SCHEDULER = config["LEARNING_SCHEDULER"]
@@ -54,29 +56,13 @@ LOSS = config["LOSS"]
 IMAGE_SIZE = int(config["IMAGE_SIZE"])
 MODEL = config["MODEL"]
 PRETRAINED = config["PRETRAINED"]
-
-NUM_WORKERS = int(config["NUM_WORKERS"])
+TASK = config["TASK"]
 
 
 DATASET = config["DATASET"]
-# RSNA_CSV = config["RSNA_CSV"]
-# RSNA_PATH = config["RSNA_PATH"]
-# CIFAR_PATH = config["CIFAR_PATH"]
-# CIFAR_INDICES = config["CIFAR_INDICES"]
 
-# HAM_TRAIN_CSV = str(config["HAM_TRAIN_CSV"])
-# HAM_VAL_CSV = str(config["HAM_VAL_CSV"])
-# HAM_TEST_CSV = str(config["HAM_TEST_CSV"])
-# HAM_TRAIN_FOLDER = str(config["HAM_TRAIN_FOLDER"])
-# HAM_VAL_FOLDER = str(config["HAM_VAL_FOLDER"])
-# HAM_TEST_FOLDER = str(config["HAM_TEST_FOLDER"])
-
-
-# APTOS_CSV = str(config["APTOS_CSV"])
-# APTOS_FOLDER = str(config["APTOS_FOLDER"])
-TASK = config["TASK"]
 PATHS = config["PATH"]
-
+# print(PATHS)
 PRETRAINING = config["PRETRAINING"]
 SAVE_DIR = config["SAVE_DIR"]
 
@@ -110,7 +96,6 @@ def main():
     
     train_loader, val_loader, test_loader = get_dataset(DATASET, PATHS,"Minimal", PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NUM_WORKERS, TASK)
 
-
     #load model
     model = get_model(MODEL, TASK, PRETRAINED, num_classes=NUM_CLASSES)
 
@@ -131,7 +116,7 @@ def main():
         
     else:
         raise Exception("Loss not implemented")
-    
+    print(loss)
     optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE)
 
     if LEARNING_SCHEDULER == "CosineAnnealingLR":
@@ -153,7 +138,7 @@ def main():
         linear_probing_epochs = None
      
     #train model
-    results = trainer(
+    results = reg_trainer(
         model=model,
         train_loader=train_loader,
         val_loader=val_loader,
@@ -174,15 +159,16 @@ def main():
     model.to(DEVICE)
     torch.compile(model)
 
-    test_loss, test_acc, test_f1, test_recall = val_step(model, test_loader, loss, DEVICE)
+    test_loss, test_acc, test_f1, test_recall,test_kappa = reg_val_step(model, test_loader, loss, DEVICE)
 
     config["test_acc"] = test_acc
     config["test_loss"] = test_loss
     config["test_f1"] = test_f1
     config["test_recall"] = test_recall
+    config["test_kappa"] = test_kappa
     
 
-    wandb.log({"test_loss": test_loss, "test_acc": test_acc})
+    wandb.log({"test_loss": test_loss, "test_acc": test_acc, "test_F1":test_f1, "test_recall":test_recall, "test_kappa":test_kappa})
 
     train_summary = {
         "config": config,

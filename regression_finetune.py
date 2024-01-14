@@ -1,4 +1,4 @@
-from engine import trainer, val_step
+from engine import reg_trainer, reg_val_step
 from utils.utils import plot_results
 from models import get_model
 
@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 import torchvision
 
-from dataset import RSNADataset
+from dataset import RSNADataset, HAM10000Dataset, AptosDataset
 from torchvision.transforms.v2 import AutoAugmentPolicy, functional as F, InterpolationMode, Transform
 from torchvision.transforms import v2
 torchvision.disable_beta_transforms_warning()
@@ -20,6 +20,7 @@ import argparse
 
 from utils.utils import EarlyStopper
 from torch.utils.data.dataset import Subset
+from utils.utils import EarlyStopper, get_dataset
 
 import yaml
 import json
@@ -27,7 +28,6 @@ import time
 import os
 import wandb
 from utils.utils import load_model
-import utils.utils as utils
 
 
 parser = argparse.ArgumentParser()
@@ -46,6 +46,10 @@ wandconf = {
         "MODEL": config["MODEL"],
         "PRETRAINED": config["PRETRAINED"],
         "LOSS": config["LOSS"],
+        "SAVE_DIR": config["SAVE_DIR"],
+        "RUN_NAME": config["RUN_NAME"],
+        "RESUME_PATH": config["RESUME_PATH"]
+
 }
 
 LEARNING_RATE = float(config["LEARNING_RATE"])
@@ -65,14 +69,24 @@ SEED_LIST = config['SEED']
 # NUM_EPOCHS_MEDIUM = config["NUM_EPOCHS_MEDIUM"]
 # NUM_EPOCHS_HEAVY = config["NUM_EPOCHS_HEAVY"]
 
-
+PATHS = config["PATH"]
 AUGMENT_LIST = config["AUGMENT_LIST"]
 
 DATASET = config["DATASET"]
-RSNA_CSV = config["RSNA_CSV"]
-RSNA_PATH = config["RSNA_PATH"]
-CIFAR_PATH = config["CIFAR_PATH"]
-CIFAR_INDICES = config["CIFAR_INDICES"]
+# RSNA_CSV = config["RSNA_CSV"]
+# RSNA_PATH = config["RSNA_PATH"]
+# CIFAR_PATH = config["CIFAR_PATH"]
+# CIFAR_INDICES = config["CIFAR_INDICES"]
+# HAM_TRAIN_CSV = str(config["HAM_TRAIN_CSV"])
+# HAM_VAL_CSV = str(config["HAM_VAL_CSV"])
+# HAM_TEST_CSV = str(config["HAM_TEST_CSV"])
+# HAM_TRAIN_FOLDER = str(config["HAM_TRAIN_FOLDER"])
+# HAM_VAL_FOLDER = str(config["HAM_VAL_FOLDER"])
+# HAM_TEST_FOLDER = str(config["HAM_TEST_FOLDER"])
+
+
+# APTOS_CSV = str(config["APTOS_CSV"])
+# APTOS_FOLDER = str(config["APTOS_FOLDER"])
 
 LOSS = config["LOSS"]
 
@@ -81,7 +95,8 @@ MODEL = config["MODEL"]
 PRETRAINED = config["PRETRAINED"]
 CUDA_DEVICE = int(config["CUDA_DEVICE"])
 NUM_WORKERS = int(config["NUM_WORKERS"])
-
+PRETRAINING = str(config["PRETRAINING"])
+TASK = config["TASK"]
 
 DEVICE = torch.device(f"cuda:{CUDA_DEVICE}" if torch.cuda.is_available() else 'cpu')
 
@@ -101,6 +116,7 @@ def START_seed(start_seed=9):
 
 
 def main():
+    global RESUME_PATH
     START_seed()
     if RESUME_PATH == "":
         run_id = time.strftime("%Y-%m-%d_%H-%M-%S")
@@ -151,9 +167,9 @@ def main():
         latest_checkpoint = torch.load(os.path.join(latest_dir, 'last_checkpoint.pth'), map_location=DEVICE)
         hyp_ls = hyp_ls[idx:]
 
-    print('################################ LEN OF HY_LS #####################', len(hyp_ls))
-    template = utils.openai_imagenet_template
 
+    print(hyp_ls)
+    print('################################ LEN OF HY_LS #####################', len(hyp_ls))
     for idx, hyperparameters in enumerate(hyp_ls):
         lr_rate = hyperparameters[0]
         augment = hyperparameters[1]
@@ -170,7 +186,11 @@ def main():
         print(lr_rate, num_epoch, augment, seed_val)                
         
 
-
+        model = get_model(MODEL, TASK, PRETRAINED, num_classes=NUM_CLASSES)
+        checkpoint = torch.load(run_path + "best_checkpoint.pth", map_location=DEVICE)
+        model.load_state_dict(checkpoint['model'])
+        model.to(DEVICE)
+        torch.compile(model)
 
         #run id is date and time of the run
         if RESUME_PATH=="":
@@ -180,101 +200,29 @@ def main():
         else:
             save_dir = latest_dir
 
-        if augment == "Minimal":
-            train_transform = v2.Compose([
-                v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.9, 1.0), antialias=True),
-                v2.ToTensor(),
-                v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
-            ])
-        elif augment == "Medium":
-            train_transform = v2.Compose([
-                # v2.RandomRotation(degrees=(-70, 70)),
-                # v2.RandomAffine(degrees=(-15, 15), translate=(0.25, 0.25), scale=(0.7, 1.2), shear=(-15, 15, -15, 15)),
-                # # v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.9, 1.0), antialias=True),
-                RandomResizedCropAndInterpolation(size=(IMAGE_SIZE, IMAGE_SIZE), scale=(0.08, 1.0), ratio=(0.75, 1.3333)),
-                v2.RandomHorizontalFlip(p=0.5),
-                v2.ColorJitter(brightness=(0.6, 1.4), contrast=(0.6, 1.4), saturation=(0.6, 1.4), hue=None),
-                # v2.GaussianBlur(kernel_size=3, sigma=(0.1, 1.0)),
-                # v2.RandomEqualize(p=0.2),
-                v2.ToTensor(),
-                v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
-            ])
-        elif augment == "Heavy":
-            train_transform = v2.Compose([
-                v2.RandomResizedCrop((IMAGE_SIZE, IMAGE_SIZE), scale=(0.7, 1.2), antialias=True),
-                # v2.RandomRotation(degrees=(-70, 70)),
-                # v2.RandomAffine(degrees=(-15, 15), translate=(0.25, 0.25), scale=(0.7, 1.2), shear=(-15, 15, -15, 15)),
-                # v2.RandomPerspective(distortion_scale=0.2, p=0.2),
-                # v2.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
-                # v2.GaussianBlur(kernel_size=3, sigma=(0.1, 1.0)),
-                # v2.RandomAutocontrast(p=0.2),
-                # v2.RandomEqualize(p=0.2),
-                v2.RandAugment(num_ops=2, magnitude=15, interpolation = InterpolationMode.BILINEAR),
-                v2.ToTensor(),
-                v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
-            ])
-        
-        val_transform = transforms.Compose([
-            v2.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),
-            v2.ToTensor(),
-            v2.Normalize(mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225]),
-            ])
+        train_loader, val_loader, test_loader = get_dataset(DATASET, PATHS,augment, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NUM_WORKERS, TASK)
 
-
-        if DATASET == "Cifar10":
-            ##Cifar Dataset
-            trainset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=train_transform)
-            valset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=True, transform=val_transform)
-            test_dataset = torchvision.datasets.CIFAR10(root=CIFAR_PATH, train=False, transform=val_transform)
-
-            idxs = np.load(CIFAR_INDICES).astype('int')
-            val_indices = []
-            train_indices = []
-            
-            for i in range(len(idxs)):
-                if idxs[i]:
-                    val_indices.append(i)
-                else:
-                    train_indices.append(i)
-
-            val_dataset = Subset(valset, val_indices)
-            train_dataset = Subset(trainset, train_indices)
-            print(len(val_dataset), len(train_dataset))
-
-        elif DATASET == "Rsna":
-            ##RSNA Dataset
-            train_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="train", transform=train_transform)
-
-            val_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="val", transform=val_transform)
-            
-            test_dataset = RSNADataset(csv_file=RSNA_CSV, data_folder=RSNA_PATH, split="test", transform=val_transform)
-
-
-        #Common part do not change
-        train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
-        val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
-        test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
-        
-        
-        model = get_model(MODEL, PRETRAINED, num_classes=NUM_CLASSES, classnames=test_dataset.classes)
-        model.to(DEVICE)
-        torch.compile(model)
-        
-        
         optimizer = torch.optim.AdamW(model.parameters(), lr=lr_rate)
 
-        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epoch, verbose=True)
+        if LEARNING_SCHEDULER == "CosineAnnealingLR":
+            lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epoch, verbose=True)
+        elif LEARNING_SCHEDULER == "CyclicLR":
+            lr_scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr = LEARNING_RATE, max_lr = LEARNING_RATE * 0.01, cycle_momentum=False)
+
         if RESUME_PATH !="":
-            model.load_state_dict(latest_checkpoint['model'])
-            optimizer.load_state_dict(latest_checkpoint['optimizer'])
-            lr_scheduler.load_state_dict(latest_checkpoint['lr_sched'].state_dict())
-            start_epoch = latest_checkpoint['epoch'] + 1
+            RESUME_PATH = ""
+            print(latest_checkpoint['epoch'])
+            if latest_checkpoint['epoch']!=50:
+                start_epoch=0
+            else:
+                continue
         else:
             start_epoch=0
+
         print(start_epoch)
 
         #train model
-        results = trainer(
+        results = reg_trainer(
             model=model,
             train_loader=train_loader,
             val_loader=val_loader,
@@ -293,13 +241,14 @@ def main():
         model.to(DEVICE)
         torch.compile(model)
 
-        test_loss, test_acc = val_step(model, test_loader, loss, DEVICE)
-        print(test_loss, test_acc)
+        test_loss, test_acc, test_f1, test_recall = reg_val_step(model, test_loader, loss, DEVICE)
+        print(test_loss, test_acc, test_f1, test_recall)
         wandb.log({"test_loss": test_loss, "test_acc": test_acc})
 
         config["test_acc"] = test_acc
         config["test_loss"] = test_loss
-
+        config["test_f1"] = test_f1
+        config["test_recall"] = test_recall
         train_summary = {
             "config": wandconf,
             "results": results,
@@ -311,7 +260,7 @@ def main():
         plot_results(results, save_dir)
 
         #append to dataframe
-        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], wandconf["NUM_EPOCHS"], wandconf["AUGMENTATION"], test_acc, test_loss]            
+        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], wandconf["SEED"], wandconf["AUGMENTATION"], test_acc, test_loss]            
 
     resultsexp.to_csv(parent_dir + "/testresults.csv", index=True)
 

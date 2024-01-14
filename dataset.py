@@ -161,12 +161,13 @@ class HAM10000Dataset(Dataset):
 
 
 class AptosDataset(Dataset):
-    def __init__(self, csv_file, data_folder, split, pretraining, transform=None):
+    def __init__(self, csv_file, data_folder, split, pretraining, task, transform=None):
         self.data = pd.read_csv(csv_file)
         self.root_dir = data_folder
         self.transform = transform
         self.split = split
         self.data = self.data.loc[self.data["split"] == self.split]
+        self.task = task
     def __len__(self):
         return len(self.data)
 
@@ -174,6 +175,8 @@ class AptosDataset(Dataset):
         img_name = os.path.join(self.root_dir, str(self.data.iloc[idx, 1]), str(self.data.iloc[idx, 0]))
         image = Image.open(img_name)
         label = self.data.iloc[idx, 1]
+        if self.task == 'Regression':
+            label = np.expand_dims(label, -1)
         if self.transform:
             image = self.transform(image)
         

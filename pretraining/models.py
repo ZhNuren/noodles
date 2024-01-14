@@ -321,6 +321,7 @@ def get_resnet50(task, pretrained=False,num_classes=10):
                 bias=True
             )
         )
+        print(model.fc[-1].out_features)
     else:
         if pretrained:
             print('hooooooooooooo')
