@@ -377,3 +377,12 @@ def update_bn(loader, model, **kwargs):
         num_samples += batch_size
 
     model.apply(lambda module: _set_momenta(module, momenta))
+
+
+def get_weights(taskweights, train_loader, device):
+    if taskweights:
+        weights = np.nansum(train_loader.dataset.labels, axis=0)
+        weights = weights.max() - weights + weights.mean()
+        weights = weights/weights.max()
+        weights = torch.from_numpy(weights).to(device).float()
+    return weights

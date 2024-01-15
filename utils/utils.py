@@ -9,7 +9,7 @@ from scipy.interpolate import interp1d
 from scipy.integrate import quad
 import cv2
 from sklearn.metrics import confusion_matrix
-from dataset import RSNADataset, HAM10000Dataset, AptosDataset
+from dataset import RSNADataset, HAM10000Dataset, AptosDataset, CheX_Dataset
 import torchvision
 from torchvision.transforms.v2 import AutoAugmentPolicy, functional as F, InterpolationMode, Transform
 from torchvision.transforms import v2
@@ -153,7 +153,13 @@ def get_dataset(DATASET, paths, augment, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NU
         train_dataset = AptosDataset(csv_file=paths[1], data_folder=paths[0], split = 'train', pretraining = PRETRAINING, task = TASK, transform=train_transform)
         val_dataset = AptosDataset(csv_file=paths[1], data_folder=paths[0], split = 'val', pretraining = PRETRAINING, task = TASK, transform=val_transform)
         test_dataset = AptosDataset(csv_file=paths[1], data_folder=paths[0], split = 'test', pretraining = PRETRAINING, task = TASK, transform=val_transform)
-
+    
+    elif DATASET == "CHEXPERT":
+        ##APTOS Dataset
+        train_dataset = CheX_Dataset(csv_file=paths[3], data_folder=paths[0], split = 'train', pretraining = PRETRAINING, task = TASK, transform=train_transform)
+        val_dataset = CheX_Dataset(csv_file=paths[4], data_folder=paths[1], split = 'val', pretraining = PRETRAINING, task = TASK, transform=val_transform)
+        test_dataset = CheX_Dataset(csv_file=paths[5], data_folder=paths[2], split = 'test', pretraining = PRETRAINING, task = TASK, transform=val_transform)
+    
 
     print(DATASET, len(train_dataset), len(val_dataset), len(test_dataset))
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)

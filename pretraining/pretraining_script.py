@@ -122,7 +122,7 @@ def main():
     
 
     #create pandas dataframe to store results
-    resultsexp = pd.DataFrame(columns=["lr_rate", "test_acc", "test_loss", "test_f1", "test_kappa"])
+    resultsexp = pd.DataFrame(columns=["lr_rate", "test_acc", "test_loss", "test_f1", "test_recall", "test_kappa"])
     
 
 

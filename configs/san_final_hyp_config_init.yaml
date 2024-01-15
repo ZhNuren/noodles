@@ -17,7 +17,7 @@ datasets: &DATASET_OPTIONS
   - &RSNA Rsna
   - &HAM HAM
   - &APTOS APTOS
-
+  - &CHEXPERT CHEXPERT
 
 
 # CIFAR_PATH: "./dataset/cifar"
@@ -38,18 +38,19 @@ paths: &PATH_OPTIONS
   - &RSNA_PATH ./dataset/rsna18""./dataset/rsna18/csv/final_dataset_wo_not_normal_cases.csv
   - &HAM_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""./dataset/ISIC/ISIC2018_Task3_Validation_Input/""./dataset/ISIC/ISIC2018_Task3_Test_Input/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
+  - &CHEXPERT_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""/l/users/santosh.sanjeev/model_soups/datasets/chexlocalize/CheXpert/val/""/l/users/santosh.sanjeev/model_soups/datasets/chexlocalize/CheXpert/test/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""/l/users/santosh.sanjeev/model_soups/datasets/chexlocalize/CheXpert/val_labels.csv""/l/users/santosh.sanjeev/model_soups/datasets/chexlocalize/CheXpert/test_labels.csv
 
 ######CHANGE ONLY THIS#######
-TASK: Regression
-MODEL: DeiT-S
+TASK: Classification
+MODEL: ResNet50
 PRETRAINING: ImageNet
-LOSS: SmoothL1Loss
+LOSS: BCEWithLogitsLoss
 LEARNING_RATE : 1e-3
 NUM_EPOCHS : 10
 IMAGE_SIZE : 224
 CUDA_DEVICE: 0
-NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR
-DATASET: *APTOS
-PATH: *APTOS_PATH
+NUM_CLASSES: 13 #2 for RSNA, 10 for CIFAR
+DATASET: *CHEXPERT
+PATH: *CHEXPERT_PATH
 SAVE_DIR: "./runs/san_final_hyp_models/san-initial_models/aptos_final_hyp_reg/deits_imagenet/"
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate

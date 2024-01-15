@@ -181,3 +181,122 @@ class AptosDataset(Dataset):
             image = self.transform(image)
         
         return image, label
+
+
+class CheX_Dataset(Dataset):
+    """CheXpert Dataset
+
+    Citation:
+
+    CheXpert: A Large Chest Radiograph Dataset with Uncertainty Labels and
+    Expert Comparison. Jeremy Irvin *, Pranav Rajpurkar *, Michael Ko,
+    Yifan Yu, Silviana Ciurea-Ilcus, Chris Chute, Henrik Marklund, Behzad
+    Haghgoo, Robyn Ball, Katie Shpanskaya, Jayne Seekins, David A. Mong,
+    Safwan S. Halabi, Jesse K. Sandberg, Ricky Jones, David B. Larson,
+    Curtis P. Langlotz, Bhavik N. Patel, Matthew P. Lungren, Andrew Y. Ng.
+    https://arxiv.org/abs/1901.07031
+
+    Dataset website here:
+    https://stanfordmlgroup.github.io/competitions/chexpert/
+
+    A small validation set is provided with the data as well, but is so tiny,
+    it is not included here.
+    """
+
+    def __init__(self,
+                 csv_file,
+                 data_folder,
+                 split,
+                 pretraining,
+                 transform=None,
+                 data_aug=None,
+                 views = ["AP", "PA"]
+                 ):
+
+        super(CheX_Dataset, self).__init__()
+
+        self.pathologies = ["Enlarged Cardiomediastinum",
+                            "Cardiomegaly",
+                            "Lung Opacity",
+                            "Lung Lesion",
+                            "Edema",
+                            "Consolidation",
+                            "Pneumonia",
+                            "Atelectasis",
+                            "Pneumothorax",
+                            "Pleural Effusion",
+                            "Pleural Other",
+                            "Fracture",
+                            "Support Devices"]
+
+        self.pathologies = sorted(self.pathologies)
+
+        self.data_folder = data_folder
+        self.transform = transform
+        self.csvpath = csv_file
+
+        self.csv = pd.read_csv(self.csvpath)
+        self.views = views
+
+        # self.csv["view"] = self.csv["Frontal/Lateral"]  # Assign view column
+        self.csv = self.csv[self.csv["Frontal/Lateral"] == "Frontal"]# = self.csv["AP/PA"]  # If Frontal change with the corresponding value in the AP/PA column otherwise remains Lateral
+
+        healthy = self.csv["No Finding"] == 1
+        labels = []
+        for pathology in self.pathologies:
+            if pathology in self.csv.columns:
+                if pathology != "Support Devices":
+                    self.csv.loc[healthy, pathology] = 0
+                mask = self.csv[pathology]
+
+            labels.append(mask.values)
+        
+        self.labels = np.asarray(labels).T
+        self.labels = self.labels.astype(np.float32)
+
+        self.labels[self.labels == -1] = np.nan
+
+        self.pathologies = list(np.char.replace(self.pathologies, "Pleural Effusion", "Effusion"))
+
+
+        # if 'train' in self.csvpath:
+        #     patientid = self.csv.Path.str.split("train/", expand=True)[1]
+        # elif 'valid' in self.csvpath:
+        #     patientid = self.csv.Path.str.split("valid/", expand=True)[1]
+        # else:
+        #     raise NotImplementedError
+
+        # patientid = patientid.str.split("/study", expand=True)[0]
+        # patientid = patientid.str.replace("patient", "")
+
+        # patientid
+        # self.csv["patientid"] = patientid
+
+        # age
+        self.csv['age_years'] = self.csv['Age'] * 1.0
+        self.csv['Age'][(self.csv['Age'] == 0)] = None
+
+        # sex
+        self.csv['sex_male'] = self.csv['Sex'] == 'Male'
+        self.csv['sex_female'] = self.csv['Sex'] == 'Female'
+
+    def string(self):
+        return self.__class__.__name__ + " num_samples={} views={} data_aug={}".format(len(self), self.views, self.data_aug)
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        label = self.labels[idx]
+
+        imgid = self.csv['Path'].iloc[idx]
+        img_path = os.path.join(self.data_folder, imgid)
+        image = Image.open(img_path)
+
+
+        if self.transform:
+            image = self.transform(image)
+
+        return image, label
+    
+

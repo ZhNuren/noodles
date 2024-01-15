@@ -4,8 +4,54 @@ from tqdm import tqdm
 import os
 import wandb
 import json
-
+from utils.train_utils import get_weights
 from sklearn.metrics import f1_score, recall_score
+
+
+
+def multilabel_xray_dataset(targets, outputs, criterion, model, taskweights, weights, device):
+
+    loss = torch.zeros(1).to(device).float()
+    for task in range(targets.shape[1]):
+        task_output = outputs[:,task]
+        task_target = targets[:,task]
+        mask = ~torch.isnan(task_target)
+        task_output = task_output[mask]
+        task_target = task_target[mask]
+        if len(task_target) > 0:
+            task_loss = criterion(task_output.float(), task_target.float())
+            if taskweights:
+                loss += weights[task]*task_loss
+            else:
+                loss += task_loss
+
+    # here regularize the weight matrix when label_concat is used
+    if label_concat_reg:
+        if not label_concat:
+            raise Exception("cfg.label_concat must be true")
+        weight = model.classifier.weight
+        num_labels = 13
+        num_datasets = weight.shape[0]//num_labels
+        weight_stacked = weight.reshape(num_datasets,num_labels,-1)
+        label_concat_reg_lambda = torch.tensor(0.1).to(device).float()
+        for task in range(num_labels):
+            dists = torch.pdist(weight_stacked[:,task], p=2).mean()
+            loss += label_concat_reg_lambda*dists
+            
+    loss = loss.sum()
+
+    # if cfg.featurereg:
+    #     feat = model.features(images)
+    #     loss += feat.abs().sum()
+        
+    # if cfg.weightreg:
+    #     loss += model.classifier.weight.abs().sum()
+
+    return loss
+
+
+
+
 
 def train_step(
         model: torch.nn.Module,
@@ -13,6 +59,7 @@ def train_step(
         loss_fn: torch.nn.Module,
         optimizer: torch.optim.Optimizer,
         device: torch.device,
+        classification = 'MultiClass',
 ):
     """
     Train model for one epoch.
@@ -39,10 +86,14 @@ def train_step(
 
         optimizer.zero_grad()
         output = model(data)
-        loss = loss_fn(output, target)
+        if classification == 'MultiLabel':
+            weights = get_weights(device = device, train_loader=train_loader, taskweights=True)
+            loss = multilabel_xray_dataset(target, output, loss_fn, model, weights, device, taskweights=True)
+        else:
+            loss = loss_fn(output, target)
         loss.backward()
         optimizer.step()
-
+        breakpoint()
         train_loss += loss.item()
         _, predicted = output.max(1)
 
@@ -64,6 +115,7 @@ def val_step(
         val_loader,
         loss_fn: torch.nn.Module,
         device: torch.device,
+        classification = 'MultiClass',
 ):
     """
     Evaluate model on val data.
@@ -118,7 +170,8 @@ def trainer(
         save_dir: str,
         early_stopper=None,
         linear_probing_epochs=None,
-        start_epoch = 1
+        start_epoch = 1,
+        dataset = 'CIFAR'
 ):
     """
     Train and evaluate model.
@@ -151,14 +204,19 @@ def trainer(
     }
     best_val_loss = 1e10
 
+    if dataset == "MIMIC" or dataset == "CHEXPERT":
+        classification = "MultiLabel"
+    else:
+        classification = "MultiClass"
+
     for epoch in range(start_epoch, epochs + 1):
 
-        if linear_probing_epochs is not None:
-            if epoch == linear_probing_epochs:
-                for param in model.parameters():
-                    param.requires_grad = True
+        # if linear_probing_epochs is not None:
+        #     if epoch == linear_probing_epochs:
+        #         for param in model.parameters():
+        #             param.requires_grad = True
         print(f"Epoch {epoch}:")
-        train_loss, train_acc, train_macro_f1, train_macro_recall, train_kappa = train_step(model, train_loader, loss_fn, optimizer, device)
+        train_loss, train_acc, train_macro_f1, train_macro_recall, train_kappa = train_step(model, train_loader, loss_fn, optimizer, device, classification)
         print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Train F1: {train_macro_f1:.4f}, Train recall: {train_macro_recall:.4f}, Train Kappa: {train_kappa:.4f}")
 
         
@@ -170,7 +228,7 @@ def trainer(
         results["train_kappa"].append(train_kappa)
 
 
-        val_loss, val_acc, val_f1, val_recall, val_kappa = val_step(model, val_loader, loss_fn, device)
+        val_loss, val_acc, val_f1, val_recall, val_kappa = val_step(model, val_loader, loss_fn, device, classification)
         print(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}, Val F1: {val_f1:.4f}, Val recall: {val_recall:.4f}, Val Kappa: {val_kappa:.4f}")
         print()
 

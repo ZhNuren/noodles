@@ -248,3 +248,148 @@ class AptosDataset(Dataset):
             image = self.post_transform(image)
         
         return image, label
+
+
+
+
+class MIMIC_Dataset(Dataset):
+    """MIMIC-CXR Dataset
+ 
+    Citation:
+ 
+    Johnson AE, Pollard TJ, Berkowitz S, Greenbaum NR, Lungren MP, Deng CY,
+    Mark RG, Horng S. MIMIC-CXR: A large publicly available database of
+    labeled chest radiographs. arXiv preprint arXiv:1901.07042. 2019 Jan 21.
+ 
+    https://arxiv.org/abs/1901.07042
+ 
+    Dataset website here:
+    https://physionet.org/content/mimic-cxr-jpg/2.0.0/
+    """
+ 
+    def __init__(self,
+                 imgpath,
+                 csvpath,
+                 metacsvpath,
+                 splitpath,
+                 views=["PA"],
+                 transform=None,
+                 data_aug=None,
+                 seed=0,
+                 split = 'train',
+                 unique_patients=True
+                 ):
+ 
+        super(MIMIC_Dataset, self).__init__()
+        np.random.seed(seed)  # Reset the seed so all runs are the same.
+ 
+        self.pathologies = ["Enlarged Cardiomediastinum",
+                            "Cardiomegaly",
+                            "Lung Opacity",
+                            "Lung Lesion",
+                            "Edema",
+                            "Consolidation",
+                            "Pneumonia",
+                            "Atelectasis",
+                            "Pneumothorax",
+                            "Pleural Effusion",
+                            "Pleural Other",
+                            "Fracture",
+                            "Support Devices"]
+ 
+        self.pathologies = sorted(self.pathologies)
+ 
+        self.imgpath = imgpath
+        self.transform = transform
+        self.data_aug = data_aug
+        self.csvpath = csvpath
+        self.csv = pd.read_csv(self.csvpath)
+        self.metacsvpath = metacsvpath
+        self.splitpath = splitpath
+        # self.PIL_transform = transforms.ToPILImage()
+       
+        self.metacsv = pd.read_csv(self.metacsvpath)
+        # print('metaaaaaaaaaaaaaaa',self.metacsv)
+        self.split_dataset = pd.read_csv(self.splitpath)
+        test_df = self.split_dataset[(self.split_dataset['split'] == split)]
+        test_df.reset_index(drop=True, inplace=True)
+        # print('testttttttttttttttt',test_df)
+ 
+        final_df = pd.merge(test_df, self.metacsv, on=['dicom_id', 'subject_id', 'study_id'], how='inner')
+        final_df = final_df[self.metacsv.columns]
+ 
+        self.csv = self.csv.set_index(['subject_id', 'study_id'])
+        final_df = final_df.set_index(['subject_id', 'study_id'])
+        print('hiiiiiiiiiiiiiiiiiii')
+        self.csv = self.csv.join(final_df, how='inner').reset_index()
+        # Keep only the desired view
+        self.csv["view"] = self.csv["ViewPosition"]
+        self.limit_to_selected_views(views)
+ 
+        if unique_patients:
+            self.csv = self.csv.groupby("subject_id").first().reset_index()
+        print('helllllllllllooooooooooooo')
+ 
+        # Get our classes.
+        healthy = self.csv["No Finding"] == 1
+        labels = []
+        for pathology in self.pathologies:
+            if pathology in self.csv.columns:
+                self.csv.loc[healthy, pathology] = 0
+                mask = self.csv[pathology]
+ 
+            labels.append(mask.values)
+        print('byereeeeeeeeeeee')
+ 
+        self.labels = np.asarray(labels).T
+        self.labels = self.labels.astype(np.float32)
+ 
+        self.labels[self.labels == -1] = np.nan
+        # print(self.labels.shape)
+        self.pathologies = list(np.char.replace(self.pathologies, "Pleural Effusion", "Effusion"))
+        print('edfsdgfhgfrhtdfghgfd')
+ 
+ 
+        # offset_day_int
+        self.csv["offset_day_int"] = self.csv["StudyDate"]
+ 
+        # patientid
+        self.csv["patientid"] = self.csv["subject_id"].astype(str)
+        # print('final df', self.csv)
+ 
+    def string(self):
+        return self.__class__.__name__ + " num_samples={} views={} data_aug={}".format(len(self), self.views, self.data_aug)
+ 
+    def __len__(self):
+        return len(self.labels)
+ 
+    def __getitem__(self, idx):
+        sample = {}
+        sample["idx"] = idx
+        sample["lab"] = self.labels[idx]
+ 
+        subjectid = str(self.csv.iloc[idx]["subject_id"])
+        studyid = str(self.csv.iloc[idx]["study_id"])
+        dicom_id = str(self.csv.iloc[idx]["dicom_id"])
+ 
+        img_path = os.path.join(self.imgpath, "p" + subjectid[:2], "p" + subjectid, "s" + studyid, dicom_id + ".jpg")
+        # img_path = os.path.join(self.imgpath, dicom_id + '.jpg' + '_' + 'p' + subjectid[:2] + '_' + 'p' + subjectid + '_' + 's' + studyid + '_' + 'GT_img1' + '.jpeg')
+        # print(img_path)
+        img = imread(img_path)
+        # img = Image.fromarray(img)
+        img = np.expand_dims(img,axis=0)
+        # img = imread(img_path)
+        img = torch.from_numpy(img)
+        img = torch.cat([img, img, img], dim=0)
+        sample["img"] = img
+        print('beforeeeee', sample["img"].shape)
+        # img = img.detach().cpu().numpy()
+        # print(img.shape)
+        # sample["img"] = normalize(img, maxval=255, reshape=False)
+        # print(sample["img"], sample["img"].shape)
+        # sample = apply_transforms(sample, self.transform)
+        # sample['img'] = sample['img'].transpose(1,2,0)
+        sample = apply_transforms(sample, self.data_aug)
+        print(sample["img"].shape)
+        # print(sample["img"], sample["img"].shape)
+        return sample

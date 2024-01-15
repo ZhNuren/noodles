@@ -241,8 +241,8 @@ def main():
         model.to(DEVICE)
         torch.compile(model)
 
-        test_loss, test_acc, test_f1, test_recall = val_step(model, test_loader, loss, DEVICE)
-        print(test_loss, test_acc, test_f1, test_recall)
+        test_loss, test_acc, test_f1, test_recall, test_kappa = val_step(model, test_loader, loss, DEVICE)
+        print(test_loss, test_acc, test_f1, test_recall, test_kappa)
         wandb.log({"test_loss": test_loss, "test_acc": test_acc})
 
         config["test_acc"] = test_acc

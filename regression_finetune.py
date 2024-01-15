@@ -151,7 +151,7 @@ def main():
     
 
     #create pandas dataframe to store results
-    resultsexp = pd.DataFrame(columns=["lr_rate", "seed", "augmentation", "test_acc", "test_loss"])
+    resultsexp = pd.DataFrame(columns=["lr_rate", "test_acc", "test_loss", "test_f1", "test_recall", "test_kappa"])
     
     hyp_ls = []
     for num, lr_rate in enumerate(LR_RATE_LIST):
@@ -241,7 +241,7 @@ def main():
         model.to(DEVICE)
         torch.compile(model)
 
-        test_loss, test_acc, test_f1, test_recall = reg_val_step(model, test_loader, loss, DEVICE)
+        test_loss, test_acc, test_f1, test_recall, test_kappa = reg_val_step(model, test_loader, loss, DEVICE)
         print(test_loss, test_acc, test_f1, test_recall)
         wandb.log({"test_loss": test_loss, "test_acc": test_acc})
 
@@ -260,7 +260,7 @@ def main():
         plot_results(results, save_dir)
 
         #append to dataframe
-        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], wandconf["SEED"], wandconf["AUGMENTATION"], test_acc, test_loss]            
+        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], test_acc, test_loss, test_f1, test_recall, test_kappa]            
 
     resultsexp.to_csv(parent_dir + "/testresults.csv", index=True)
 

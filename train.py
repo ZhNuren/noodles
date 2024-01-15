@@ -165,7 +165,8 @@ def main():
         epochs=NUM_EPOCHS,
         save_dir=save_dir,
         early_stopper=early_stopper,
-        linear_probing_epochs=linear_probing_epochs
+        linear_probing_epochs=linear_probing_epochs,
+        dataset = DATASET
     )
 
     
