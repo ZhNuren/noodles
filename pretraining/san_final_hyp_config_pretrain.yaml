@@ -1,5 +1,5 @@
-BATCH_SIZE : 128
-NUM_WORKERS : 16
+BATCH_SIZE : 4
+NUM_WORKERS : 2
 LINEAR_PROBING: False
 PROBING_EPOCHS : 30
 PATIENCE : 5
@@ -22,6 +22,7 @@ datasets: &DATASET_OPTIONS
   - &HAM HAM
   - &APTOS APTOS
   - &DR DR
+  - &ISIC2020 ISIC2020
 RSNA_PATH: "./dataset/rsna18"
 CIFAR_PATH: "./dataset/cifar"
 CIFAR_INDICES: "./dataset/cifar/cifar1098_idxs.npy"
@@ -41,7 +42,7 @@ paths: &PATH_OPTIONS
   - &HAM_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""./dataset/ISIC/ISIC2018_Task3_Validation_Input/""./dataset/ISIC/ISIC2018_Task3_Test_Input/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv
   - &DR_PATH ./dataset/224_data/DR/""./dataset/224_data/DR/all_dataset_splits.csv
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
-  
+  - &ISIC2020_PATH ./dataset/isic/train/""./dataset/isic/isic_dataset_splits.csv
 
 
 
@@ -54,12 +55,12 @@ TASK: Classification
 INITIALISATION: Random
 PRETRAINING: Random
 LEARNING_SCHEDULER : CosineAnnealingLR
-SAVE_DIR: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-intialisation/DR_model/resnet50_v2/"
-CUDA_DEVICE: 0
-NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR
-DATASET: *DR
-MODEL: ResNet50
-PATH: *DR_PATH
+SAVE_DIR: "./runs/san_initial_runs/resnet50/"
+CUDA_DEVICE: 1
+NUM_CLASSES: 2 #2 for RSNA, 10 for CIFAR
+DATASET: *ISIC2020
+MODEL: ResNet50 #DenseNet121, DeiT-S
+PATH: *ISIC2020_PATH
 RESUME_PATH: ""
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
 
