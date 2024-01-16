@@ -28,7 +28,7 @@ datasets: &DATASET_OPTIONS
   - &RSNA Rsna
   - &HAM HAM
   - &APTOS APTOS
-
+  - &CHEXPERT CHEXPERT
 RSNA_PATH: "./dataset/rsna18"
 CIFAR_PATH: "./dataset/cifar"
 CIFAR_INDICES: "./dataset/cifar/cifar1098_idxs.npy"
@@ -47,6 +47,7 @@ paths: &PATH_OPTIONS
   - &RSNA_PATH ./dataset/rsna18""./dataset/rsna18/csv/final_dataset_wo_not_normal_cases.csv
   - &HAM_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""./dataset/ISIC/ISIC2018_Task3_Validation_Input/""./dataset/ISIC/ISIC2018_Task3_Test_Input/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
+  - &CHEXPERT_PATH /share/nvmedata/santosh/""/share/nvmedata/santosh/""/share/nvmedata/santosh/""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/train.csv""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/valid.csv""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/test_labels_v2.csv
 
 
 
@@ -54,19 +55,20 @@ paths: &PATH_OPTIONS
 
 
 ######CHANGE ONLY THIS#########
-LOSS: CrossEntropyLoss
-NUM_EPOCHS : 50
+LOSS: BCEWithLogitsLoss
+NUM_EPOCHS : 30
 TASK: Classification
 PRETRAINING: ImageNet
+CLASSIFICATION: MultiLabel
 LEARNING_SCHEDULER : CosineAnnealingLR
-SAVE_DIR: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/rsna_final_hyp/deits_imagenet/2024-01-13_00-51-44/"
-RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/rsna_final_hyp/deits_imagenet/2024-01-13_00-32-08/" #CIFAR
+SAVE_DIR: "/share/nvmedata/santosh/model_soups/runs/san_final_hyp_models/san-finetune/chexpert_final_hyp/resnet50_imagenet/"
+RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/chexpert_final_hyp/densenet121_imagenet/2024-01-16_20-24-41/" #CIFAR
 CUDA_DEVICE: 0
-NUM_CLASSES: 2 #2 for RSNA, 10 for CIFAR
-DATASET: *RSNA
-MODEL: DeiT-S
-PATH: *RSNA_PATH
-RESUME_PATH: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/rsna_final_hyp/deits_imagenet/2024-01-13_00-51-44/"
+NUM_CLASSES: 13 #2 for RSNA, 10 for CIFAR
+DATASET: *CHEXPERT
+MODEL: DenseNet121
+PATH: *CHEXPERT_PATH
+RESUME_PATH: ""
 
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
 

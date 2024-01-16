@@ -30,7 +30,7 @@ from utils.utils import load_model
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--config', type=str, default='./configs/config_init.yaml', metavar='DIR', help='configs')
+parser.add_argument('--config', type=str, default='./configs/san_final_hyp_config_init.yaml', metavar='DIR', help='configs')
 
 args = parser.parse_args()
 
@@ -76,7 +76,7 @@ DATASET = config["DATASET"]
 # APTOS_FOLDER = str(config["APTOS_FOLDER"])
 TASK = config["TASK"]
 PATHS = config["PATH"]
-
+CLASSIFICATION = config["CLASSIFICATION"]
 PRETRAINING = config["PRETRAINING"]
 SAVE_DIR = config["SAVE_DIR"]
 
@@ -175,12 +175,16 @@ def main():
     model.to(DEVICE)
     torch.compile(model)
 
-    test_loss, test_acc, test_f1, test_recall = val_step(model, test_loader, loss, DEVICE)
-
+    test_loss, test_acc, test_f1, test_recall, test_kappa, test_auc = val_step(model, test_loader, train_loader=train_loader, loss_fn=loss, device = DEVICE, classification = CLASSIFICATION)
+    print(test_loss, test_acc, test_f1, test_recall, test_kappa, test_auc)
     config["test_acc"] = test_acc
     config["test_loss"] = test_loss
     config["test_f1"] = test_f1
     config["test_recall"] = test_recall
+    config["test_kappa"] = test_kappa
+    config["test_auc"] = test_auc
+    
+
     
 
     wandb.log({"test_loss": test_loss, "test_acc": test_acc})

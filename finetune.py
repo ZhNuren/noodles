@@ -64,7 +64,7 @@ SAVE_DIR = str(config["SAVE_DIR"])
 
 LR_RATE_LIST = config["LR_RATE_LIST"]
 SEED_LIST = config['SEED']
-
+CLASSIFICATION = config["CLASSIFICATION"]
 # NUM_EPOCHS_MINIMAL = config["NUM_EPOCHS_MINIMAL"]
 # NUM_EPOCHS_MEDIUM = config["NUM_EPOCHS_MEDIUM"]
 # NUM_EPOCHS_HEAVY = config["NUM_EPOCHS_HEAVY"]
@@ -151,7 +151,7 @@ def main():
     
 
     #create pandas dataframe to store results
-    resultsexp = pd.DataFrame(columns=["lr_rate", "seed", "augmentation", "test_acc", "test_loss"])
+    resultsexp = pd.DataFrame(columns=["lr_rate", "seed", "augmentation", "test_acc", "test_loss", "auc"])
     
     hyp_ls = []
     for num, lr_rate in enumerate(LR_RATE_LIST):
@@ -233,7 +233,8 @@ def main():
             device=DEVICE,
             epochs=num_epoch,
             save_dir=save_dir,
-            start_epoch = start_epoch
+            start_epoch = start_epoch,
+            dataset = DATASET
         )
 
         checkpoint = torch.load(save_dir + "/best_checkpoint.pth")
@@ -241,14 +242,16 @@ def main():
         model.to(DEVICE)
         torch.compile(model)
 
-        test_loss, test_acc, test_f1, test_recall, test_kappa = val_step(model, test_loader, loss, DEVICE)
-        print(test_loss, test_acc, test_f1, test_recall, test_kappa)
+        test_loss, test_acc, test_f1, test_recall, test_kappa, test_auc = val_step(model, test_loader, train_loader=train_loader, loss_fn=loss, device = DEVICE, classification = CLASSIFICATION)
+        print(test_loss, test_acc, test_f1, test_recall, test_kappa, test_auc)
         wandb.log({"test_loss": test_loss, "test_acc": test_acc})
 
         config["test_acc"] = test_acc
         config["test_loss"] = test_loss
         config["test_f1"] = test_f1
         config["test_recall"] = test_recall
+        config["test_auc"] = test_auc
+
         train_summary = {
             "config": wandconf,
             "results": results,
@@ -260,7 +263,7 @@ def main():
         plot_results(results, save_dir)
 
         #append to dataframe
-        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], wandconf["SEED"], wandconf["AUGMENTATION"], test_acc, test_loss]            
+        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], wandconf["SEED"], wandconf["AUGMENTATION"], test_acc, test_loss, test_auc]        
 
     resultsexp.to_csv(parent_dir + "/testresults.csv", index=True)
 

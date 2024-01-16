@@ -22,6 +22,8 @@ datasets: &DATASET_OPTIONS
   - &HAM HAM
   - &APTOS APTOS
   - &DR DR
+  - &MIMIC MIMIC
+
 
 RSNA_PATH: "./dataset/rsna18"
 CIFAR_PATH: "./dataset/cifar"
@@ -42,25 +44,20 @@ paths: &PATH_OPTIONS
   - &HAM_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""./dataset/ISIC/ISIC2018_Task3_Validation_Input/""./dataset/ISIC/ISIC2018_Task3_Test_Input/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv
   - &DR_PATH ./dataset/224_data/DR/""./dataset/224_data/DR/all_dataset_splits.csv
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
+  - &MIMIC_PATH ./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/files/""./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/mimic-cxr-2.0.0-chexpert.csv""./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/mimic-cxr-2.0.0-metadata.csv""./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/mimic-cxr-2.0.0-split.csv
   
-
-
-
-
-
-
 ######CHANGE ONLY THIS#########
 NUM_EPOCHS : 200
 TASK: Classification
 INITIALISATION: Random
 PRETRAINING: Random
 LEARNING_SCHEDULER : CosineAnnealingLR
-SAVE_DIR: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-intialisation/DR_model/deits/"
+SAVE_DIR: "./runs/san_final_hyp_models/san-intialisation/MIMIC_model/resnet50/"
 CUDA_DEVICE: 0
 NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR
-DATASET: *DR
-MODEL: DeiT-S
-PATH: *DR_PATH
+DATASET: *MIMIC
+MODEL: ResNet50
+PATH: *MIMIC_PATH
 RESUME_PATH: ""
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
 

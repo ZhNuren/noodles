@@ -5,11 +5,11 @@ import os
 import wandb
 import json
 from utils.train_utils import get_weights
-from sklearn.metrics import f1_score, recall_score
+from sklearn.metrics import f1_score, recall_score, roc_auc_score
 
 
 
-def multilabel_xray_dataset(targets, outputs, criterion, model, taskweights, weights, device):
+def multilabel_xray_dataset(targets, outputs, criterion, model, weights, device, task_outputs, task_targets, taskweights):
 
     loss = torch.zeros(1).to(device).float()
     for task in range(targets.shape[1]):
@@ -24,8 +24,15 @@ def multilabel_xray_dataset(targets, outputs, criterion, model, taskweights, wei
                 loss += weights[task]*task_loss
             else:
                 loss += task_loss
+        
+        task_outputs[task].append(task_output.detach().cpu().numpy())
+        task_targets[task].append(task_target.detach().cpu().numpy())
 
-    # here regularize the weight matrix when label_concat is used
+    # here regularize the weight matrix when label_concat is used #CHANGEEEEE THIS
+    label_concat_reg = False
+    label_concat = False
+
+
     if label_concat_reg:
         if not label_concat:
             raise Exception("cfg.label_concat must be true")
@@ -47,7 +54,7 @@ def multilabel_xray_dataset(targets, outputs, criterion, model, taskweights, wei
     # if cfg.weightreg:
     #     loss += model.classifier.weight.abs().sum()
 
-    return loss
+    return loss, task_outputs, task_targets
 
 
 
@@ -80,6 +87,12 @@ def train_step(
     train_acc = 0.0
     train_targets = []
     train_predictions = []
+    if classification == 'MultiLabel':
+        task_outputs={}
+        task_targets={}
+        for task in range(13):
+            task_outputs[task] = []
+            task_targets[task] = []
 
     for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
         data, target = data.to(device), target.to(device)
@@ -88,31 +101,56 @@ def train_step(
         output = model(data)
         if classification == 'MultiLabel':
             weights = get_weights(device = device, train_loader=train_loader, taskweights=True)
-            loss = multilabel_xray_dataset(target, output, loss_fn, model, weights, device, taskweights=True)
+            loss, task_outputs, task_targets = multilabel_xray_dataset(target, output, loss_fn, model, weights, device, task_outputs, task_targets, taskweights=True)
         else:
             loss = loss_fn(output, target)
         loss.backward()
         optimizer.step()
-        breakpoint()
+
         train_loss += loss.item()
-        _, predicted = output.max(1)
+        if classification != "MultiLabel":
+            _, predicted = output.max(1)
 
-        train_targets.extend(target.cpu().numpy())
-        train_predictions.extend(predicted.cpu().numpy())
+            train_targets.extend(target.cpu().numpy())
+            train_predictions.extend(predicted.cpu().numpy())
 
-        train_acc += predicted.eq(target).sum().item() / len(target)
-    
-    train_kappa = cohen_kappa_score(train_targets, train_predictions, weights = 'quadratic')
-    train_loss /= len(train_loader)
-    train_acc /= len(train_loader)
-    train_macro_f1 = f1_score(train_targets, train_predictions, average='macro')
-    train_macro_recall = recall_score(train_targets, train_predictions, average='macro')
+            train_acc += predicted.eq(target).sum().item() / len(target)
 
-    return train_loss, train_acc, train_macro_f1, train_macro_recall, train_kappa
+    if classification != "MultiLabel":
+        train_kappa = cohen_kappa_score(train_targets, train_predictions, weights = 'quadratic')
+        train_loss /= len(train_loader)
+        train_acc /= len(train_loader)
+        train_macro_f1 = f1_score(train_targets, train_predictions, average='macro')
+        train_macro_recall = recall_score(train_targets, train_predictions, average='macro')
+        train_auc = roc_auc_score(train_targets, train_predictions)
+
+    else:
+        for task in range(len(task_targets)):
+            task_outputs[task] = np.concatenate(task_outputs[task])
+            task_targets[task] = np.concatenate(task_targets[task])
+
+
+        train_loss /= len(train_loader)
+        task_aucs = []
+        for task in range(len(task_targets)):
+            if len(np.unique(task_targets[task]))> 1:
+                task_auc = roc_auc_score(task_targets[task], task_outputs[task])
+                #print(task, task_auc)
+                task_aucs.append(task_auc)
+            else:
+                task_aucs.append(np.nan)
+
+        task_aucs = np.asarray(task_aucs)
+        train_auc = np.mean(task_aucs[~np.isnan(task_aucs)])
+        train_acc, train_macro_f1, train_macro_recall, train_kappa = 0,0,0,0
+
+    return train_loss, train_acc, train_macro_f1, train_macro_recall, train_kappa, train_auc
+
 
 def val_step(
         model: torch.nn.Module,
         val_loader,
+        train_loader,
         loss_fn: torch.nn.Module,
         device: torch.device,
         classification = 'MultiClass',
@@ -135,27 +173,62 @@ def val_step(
     val_acc = 0.0
     val_targets = []
     val_predictions = []
+    if classification == 'MultiLabel':
+        task_outputs={}
+        task_targets={}
+        for task in range(13):
+            task_outputs[task] = []
+            task_targets[task] = []
+
 
     with torch.no_grad():
         for data, target in tqdm(val_loader):
             data, target = data.to(device), target.to(device)
             data = data.float()
             output = model(data)
-            val_loss += loss_fn(output, target).item()
+            if classification == 'MultiLabel':
+                weights = get_weights(device = device, train_loader=train_loader, taskweights=True)
+                loss, task_outputs, task_targets = multilabel_xray_dataset(target, output, loss_fn, model, weights, device, task_outputs, task_targets, taskweights=True)
+            else:
+                loss = loss_fn(output, target)
+            val_loss += loss.item()
+            if classification != "MultiLabel":
+                _, predicted = output.max(1)
 
-            _, predicted = output.max(1)
-            val_targets.extend(target.cpu().numpy())
-            val_predictions.extend(predicted.cpu().numpy())
+                val_targets.extend(target.cpu().numpy())
+                val_predictions.extend(predicted.cpu().numpy())
 
-            val_acc += predicted.eq(target).sum().item() / len(target)
+                val_acc += predicted.eq(target).sum().item() / len(target)
 
-    val_loss /= len(val_loader)
-    val_acc /= len(val_loader)
-    val_macro_f1 = f1_score(val_targets, val_predictions, average='macro')
-    val_macro_recall = recall_score(val_targets, val_predictions, average='macro')
-    val_kappa = cohen_kappa_score(val_targets,val_predictions, weights = 'quadratic')
+        if classification != "MultiLabel":
+            val_loss /= len(val_loader)
+            val_acc /= len(val_loader)
+            val_macro_f1 = f1_score(val_targets, val_predictions, average='macro')
+            val_macro_recall = recall_score(val_targets, val_predictions, average='macro')
+            val_kappa = cohen_kappa_score(val_targets,val_predictions, weights = 'quadratic')
+            val_auc = roc_auc_score(val_targets, val_predictions)
+        else:
+            for task in range(len(task_targets)):
+                task_outputs[task] = np.concatenate(task_outputs[task])
+                task_targets[task] = np.concatenate(task_targets[task])
 
-    return val_loss, val_acc, val_macro_f1, val_macro_recall, val_kappa
+
+            val_loss /= len(val_loader)
+            task_aucs = []
+            for task in range(len(task_targets)):
+                if len(np.unique(task_targets[task]))> 1:
+                    task_auc = roc_auc_score(task_targets[task], task_outputs[task])
+                    #print(task, task_auc)
+                    task_aucs.append(task_auc)
+                else:
+                    task_aucs.append(np.nan)
+
+            task_aucs = np.asarray(task_aucs)
+            val_auc = np.mean(task_aucs[~np.isnan(task_aucs)])
+            val_acc, val_macro_f1, val_macro_recall, val_kappa = 0,0,0,0
+
+
+    return val_loss, val_acc, val_macro_f1, val_macro_recall, val_kappa, val_auc
 
 def trainer(
         model: torch.nn.Module,
@@ -201,6 +274,8 @@ def trainer(
         "val_recall":[],
         "train_kappa":[],
         "val_kappa":[],
+        "train_auc":[],
+        "val_auc":[],
     }
     best_val_loss = 1e10
 
@@ -208,7 +283,7 @@ def trainer(
         classification = "MultiLabel"
     else:
         classification = "MultiClass"
-
+    print(classification)
     for epoch in range(start_epoch, epochs + 1):
 
         # if linear_probing_epochs is not None:
@@ -216,8 +291,8 @@ def trainer(
         #         for param in model.parameters():
         #             param.requires_grad = True
         print(f"Epoch {epoch}:")
-        train_loss, train_acc, train_macro_f1, train_macro_recall, train_kappa = train_step(model, train_loader, loss_fn, optimizer, device, classification)
-        print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Train F1: {train_macro_f1:.4f}, Train recall: {train_macro_recall:.4f}, Train Kappa: {train_kappa:.4f}")
+        train_loss, train_acc, train_macro_f1, train_macro_recall, train_kappa, train_auc = train_step(model, train_loader, loss_fn, optimizer, device, classification)
+        print(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, Train F1: {train_macro_f1:.4f}, Train recall: {train_macro_recall:.4f}, Train Kappa: {train_kappa:.4f}, Train AUC: {train_auc:.4f}")
 
         
 
@@ -226,10 +301,10 @@ def trainer(
         results["train_f1"].append(train_macro_f1)
         results["train_recall"].append(train_macro_recall)
         results["train_kappa"].append(train_kappa)
+        results["train_auc"].append(train_auc)
 
-
-        val_loss, val_acc, val_f1, val_recall, val_kappa = val_step(model, val_loader, loss_fn, device, classification)
-        print(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}, Val F1: {val_f1:.4f}, Val recall: {val_recall:.4f}, Val Kappa: {val_kappa:.4f}")
+        val_loss, val_acc, val_f1, val_recall, val_kappa, val_auc = val_step(model, val_loader, train_loader, loss_fn, device, classification)
+        print(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}, Val F1: {val_f1:.4f}, Val recall: {val_recall:.4f}, Val Kappa: {val_kappa:.4f}, Val AUC: {val_auc:.4f}")
         print()
 
         if lr_scheduler_name == "ReduceLROnPlateau":
@@ -242,9 +317,10 @@ def trainer(
         results["val_f1"].append(val_f1)
         results["val_recall"].append(val_recall)
         results["val_kappa"].append(val_kappa)
+        results["val_auc"].append(val_auc)
         
         
-        wandb.log({"train_loss": train_loss, "val_loss": val_loss, "train_acc": train_acc, "val_acc": val_acc, "train_f1": train_macro_f1, "train_recall": train_macro_recall, "val_f1": val_f1, "val_recall": val_recall,  "train_kappa": train_kappa, "val_kappa": val_kappa})
+        wandb.log({"train_loss": train_loss, "val_loss": val_loss, "train_acc": train_acc, "val_acc": val_acc, "train_f1": train_macro_f1, "train_recall": train_macro_recall, "val_f1": val_f1, "val_recall": val_recall,  "train_kappa": train_kappa, "val_kappa": val_kappa, "trian_auc": train_auc, "val_auc": val_auc})
         
 
         if lr_scheduler_name=="CyclicLR":

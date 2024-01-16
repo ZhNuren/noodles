@@ -210,6 +210,7 @@ class CheX_Dataset(Dataset):
                  pretraining,
                  transform=None,
                  data_aug=None,
+                 task = 'Classification',
                  views = ["AP", "PA"]
                  ):
 
@@ -234,10 +235,10 @@ class CheX_Dataset(Dataset):
         self.data_folder = data_folder
         self.transform = transform
         self.csvpath = csv_file
-
+        self.split = split
         self.csv = pd.read_csv(self.csvpath)
-        self.views = views
 
+        self.views = views
         # self.csv["view"] = self.csv["Frontal/Lateral"]  # Assign view column
         self.csv = self.csv[self.csv["Frontal/Lateral"] == "Frontal"]# = self.csv["AP/PA"]  # If Frontal change with the corresponding value in the AP/PA column otherwise remains Lateral
 
@@ -250,12 +251,10 @@ class CheX_Dataset(Dataset):
                 mask = self.csv[pathology]
 
             labels.append(mask.values)
-        
+
         self.labels = np.asarray(labels).T
         self.labels = self.labels.astype(np.float32)
-
         self.labels[self.labels == -1] = np.nan
-
         self.pathologies = list(np.char.replace(self.pathologies, "Pleural Effusion", "Effusion"))
 
 
@@ -273,13 +272,14 @@ class CheX_Dataset(Dataset):
         # self.csv["patientid"] = patientid
 
         # age
-        self.csv['age_years'] = self.csv['Age'] * 1.0
-        self.csv['Age'][(self.csv['Age'] == 0)] = None
+        if self.split != 'test':
+            self.csv['age_years'] = self.csv['Age'] * 1.0
+            self.csv['Age'][(self.csv['Age'] == 0)] = None
+            self.csv['sex_male'] = self.csv['Sex'] == 'Male'
+            self.csv['sex_female'] = self.csv['Sex'] == 'Female'
 
-        # sex
-        self.csv['sex_male'] = self.csv['Sex'] == 'Male'
-        self.csv['sex_female'] = self.csv['Sex'] == 'Female'
 
+        # print(self.csv, self.labels, self.labels.shape)
     def string(self):
         return self.__class__.__name__ + " num_samples={} views={} data_aug={}".format(len(self), self.views, self.data_aug)
 
