@@ -14,7 +14,7 @@ paths: &PATH_OPTIONS
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
 
 
-WEIGHT_PATH: "./runs/san_final_hyp_models/san-finetune/aptos_final_hyp/resnet50_imagenet/2024-01-10_03-03-01/"
+WEIGHT_PATH: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/cifar_final_hyp/densenet-121/2024-01-05_17-26-35/"
 
 NUM_WORKERS : 16
 BATCH_SIZE: 128
@@ -22,8 +22,12 @@ IMAGE_SIZE: 224
 
 
 PRETRAINING: ImageNet
+CLASSIFICATION: 'MultiClass'
+TASK: Classification
+DATASET: *CIFAR10
+PATH: *CIFAR_PATH
+MODEL: DenseNet121
+val_sort_by: 'Val Accuracy'
+test_sort_by: 'Test Accuracy'
 
-DATASET: *APTOS
-PATH: *APTOS_PATH
-
-NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR 
+NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR 

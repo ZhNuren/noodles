@@ -13,7 +13,7 @@ LOSS: CrossEntropyLoss
 # RUN_NAME: "2023-12-26_21-49-40" #RSNA
 
 
-LR_RATE_LIST: [1e-4, 5e-5, 1e-5, 5e-6, 1e-6, 5e-3, 1e-3, 5e-2, 1e-2]
+LR_RATE_LIST: [1e-3, 1e-4, 5e-5, 1e-5, 5e-6, 1e-6, 5e-3, 5e-2, 1e-2, 1e-1]
 
 datasets: &DATASET_OPTIONS
   - &CIFAR10 Cifar10
@@ -47,17 +47,19 @@ paths: &PATH_OPTIONS
   - &MIMIC_PATH ./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/files/""./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/mimic-cxr-2.0.0-chexpert.csv""./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/mimic-cxr-2.0.0-metadata.csv""./dataset/MIMIC/files/mimic-cxr-jpg/2.0.0/mimic-cxr-2.0.0-split.csv
   
 ######CHANGE ONLY THIS#########
-NUM_EPOCHS : 200
+NUM_EPOCHS : 100
 TASK: Classification
 INITIALISATION: Random
 PRETRAINING: Random
 LEARNING_SCHEDULER : CosineAnnealingLR
-SAVE_DIR: "./runs/san_final_hyp_models/san-intialisation/MIMIC_model/resnet50/"
+SAVE_DIR: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-intialisation/MIMIC_model/resnet50/"
 CUDA_DEVICE: 0
-NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR
+NUM_CLASSES: 13 #2 for RSNA, 10 for CIFAR
 DATASET: *MIMIC
 MODEL: ResNet50
 PATH: *MIMIC_PATH
 RESUME_PATH: ""
+CLASSIFICATION: MultiLabel
+
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate
 

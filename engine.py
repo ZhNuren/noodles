@@ -122,7 +122,7 @@ def train_step(
         train_acc /= len(train_loader)
         train_macro_f1 = f1_score(train_targets, train_predictions, average='macro')
         train_macro_recall = recall_score(train_targets, train_predictions, average='macro')
-        train_auc = roc_auc_score(train_targets, train_predictions)
+        train_auc = roc_auc_score(train_targets, train_predictions, multi_class='ovr', average = 'weighted')
 
     else:
         for task in range(len(task_targets)):
@@ -206,7 +206,7 @@ def val_step(
             val_macro_f1 = f1_score(val_targets, val_predictions, average='macro')
             val_macro_recall = recall_score(val_targets, val_predictions, average='macro')
             val_kappa = cohen_kappa_score(val_targets,val_predictions, weights = 'quadratic')
-            val_auc = roc_auc_score(val_targets, val_predictions)
+            val_auc = 0#roc_auc_score(val_targets, val_predictions, multi_class='ovr', average = 'weighted')
         else:
             for task in range(len(task_targets)):
                 task_outputs[task] = np.concatenate(task_outputs[task])

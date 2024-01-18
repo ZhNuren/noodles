@@ -202,9 +202,9 @@ def get_dataset(DATASET, paths, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NUM_WORKERS
             train_dataset = Subset(trainset, train_indices)
     elif DATASET == "MIMIC":
         ##RSNA Dataset
-        train_dataset = MIMIC_Dataset(csvpath=paths[1], imgpath=paths[0], split="train", splitpath = paths[3], metacsvpath = paths[2], pretraining = PRETRAINING, transform=transforms.train_transform)
-        val_dataset = MIMIC_Dataset(csvpath=paths[1], imgpath=paths[0], split="val", splitpath = paths[3], metacsvpath = paths[2], pretraining = PRETRAINING, transform=transforms.val_transform)
-        test_dataset = MIMIC_Dataset(csvpath=paths[1], imgpath=paths[0], split="test", splitpath = paths[3], metacsvpath = paths[2], pretraining = PRETRAINING, transform=transforms.val_transform)
+        train_dataset = MIMIC_Dataset(csvpath=paths[1], imgpath=paths[0], split="train", splitpath = paths[3], metacsvpath = paths[2], pretraining = PRETRAINING, transform=transforms.train_transform, post_transform = transforms.tensor_transform)
+        val_dataset = MIMIC_Dataset(csvpath=paths[1], imgpath=paths[0], split="validate", splitpath = paths[3], metacsvpath = paths[2], pretraining = PRETRAINING, transform=transforms.val_transform, post_transform = transforms.tensor_transform)
+        test_dataset = MIMIC_Dataset(csvpath=paths[1], imgpath=paths[0], split="test", splitpath = paths[3], metacsvpath = paths[2], pretraining = PRETRAINING, transform=transforms.val_transform, post_transform = transforms.tensor_transform)
 
     elif DATASET == "ISIC":
         ##HAM Dataset
@@ -312,6 +312,7 @@ class MIMIC_Dataset(Dataset):
                  pretraining,
                  views=["PA", "AP"],
                  transform=None,
+                 post_transform = None, 
                  split = 'train',
                  ):
  
@@ -335,6 +336,7 @@ class MIMIC_Dataset(Dataset):
  
         self.imgpath = imgpath
         self.transform = transform
+        self.post_transform = post_transform
         self.csvpath = csvpath
         self.csv = pd.read_csv(self.csvpath)
         self.metacsvpath = metacsvpath
@@ -349,18 +351,18 @@ class MIMIC_Dataset(Dataset):
  
         final_df = pd.merge(test_df, self.metacsv, on=['dicom_id', 'subject_id', 'study_id'], how='inner')
         final_df = final_df[self.metacsv.columns]
- 
+
         self.csv = self.csv.set_index(['subject_id', 'study_id'])
         final_df = final_df.set_index(['subject_id', 'study_id'])
 
         self.csv = self.csv.join(final_df, how='inner').reset_index()
         # Keep only the desired view
         self.csv["view"] = self.csv["ViewPosition"]
-        self.limit_to_selected_views(views)
- 
+        self.csv = self.csv[self.csv["view"].isin(['AP', 'PA'])]
+
         # if unique_patients:
         #     self.csv = self.csv.groupby("subject_id").first().reset_index()
- 
+
         # Get our classes.
         healthy = self.csv["No Finding"] == 1
         labels = []
@@ -377,8 +379,7 @@ class MIMIC_Dataset(Dataset):
         self.labels[self.labels == -1] = np.nan
         # print(self.labels.shape)
         self.pathologies = list(np.char.replace(self.pathologies, "Pleural Effusion", "Effusion")) 
-        if self.transform:
-            image = self.transform(image)
+
 
  
     def string(self):
@@ -395,7 +396,7 @@ class MIMIC_Dataset(Dataset):
         dicom_id = str(self.csv.iloc[idx]["dicom_id"])
  
         img_path = os.path.join(self.imgpath, "p" + subjectid[:2], "p" + subjectid, "s" + studyid, dicom_id + ".jpg")
-        image = Image.open(img_path)
+        image = np.array(Image.open(img_path))
 
         if self.transform:
             image = self.transform(image = image)['image']

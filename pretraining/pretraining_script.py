@@ -74,7 +74,7 @@ TASK = config["TASK"]
 DEVICE = torch.device(f"cuda:{CUDA_DEVICE}" if torch.cuda.is_available() else 'cpu')
 INITIALISATION = str(config["INITIALISATION"])
 RESUME_PATH = str(config["RESUME_PATH"])
-
+CLASSIFICATION = str(config["CLASSIFICATION"])
 print(f"Using {DEVICE} device")
 
 
@@ -122,7 +122,7 @@ def main():
     
 
     #create pandas dataframe to store results
-    resultsexp = pd.DataFrame(columns=["lr_rate", "test_acc", "test_loss", "test_f1", "test_recall", "test_kappa"])
+    resultsexp = pd.DataFrame(columns=["lr_rate", "test_acc", "test_loss", "test_f1", "test_recall", "test_kappa","test_auc"])
     
 
 
@@ -152,6 +152,7 @@ def main():
             lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epoch, verbose=True)
         elif LEARNING_SCHEDULER == "CyclicLR":
             lr_scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr = lr_rate, max_lr = lr_rate * 0.01, cycle_momentum=False)
+        early_stopper = EarlyStopper(patience=PATIENCE, min_delta=0.001)
 
         #train model
         results = trainer(
@@ -165,6 +166,8 @@ def main():
             device=DEVICE,
             epochs=num_epoch,
             save_dir=save_dir,
+            dataset = DATASET,
+            early_stopper = early_stopper,
         )
 
         checkpoint = torch.load(save_dir + "/best_checkpoint.pth")
@@ -172,14 +175,14 @@ def main():
         model.to(DEVICE)
         torch.compile(model)
 
-        test_loss, test_acc, test_f1, test_recall,test_kappa = val_step(model, test_loader, loss, DEVICE)
-
+        test_loss, test_acc, test_f1, test_recall, test_kappa, test_auc = val_step(model, test_loader, train_loader=train_loader, loss_fn=loss, device = DEVICE, classification = CLASSIFICATION)
+        print(test_loss, test_acc, test_f1, test_recall, test_kappa, test_auc)
         config["test_acc"] = test_acc
         config["test_loss"] = test_loss
         config["test_f1"] = test_f1
         config["test_recall"] = test_recall
         config["test_kappa"] = test_kappa
-        
+        config["test_auc"] = test_auc
 
         wandb.log({"test_loss": test_loss, "test_acc": test_acc, "test_F1":test_f1, "test_recall":test_recall, "test_kappa":test_kappa})
 
@@ -195,7 +198,7 @@ def main():
         plot_results(results, save_dir)
 
         #append to dataframe
-        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], test_acc, test_loss, test_f1, test_recall, test_kappa]            
+        resultsexp.loc[len(resultsexp)] = [wandconf["LEARNING_RATE"], test_acc, test_loss, test_f1, test_recall, test_kappa, test_auc]            
 
     resultsexp.to_csv(parent_dir + "/testresults.csv", index=True)
 

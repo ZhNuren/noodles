@@ -220,6 +220,7 @@ def main():
             start_epoch=0
 
         print(start_epoch)
+        early_stopper = EarlyStopper(patience=PATIENCE, min_delta=0.001)
 
         #train model
         results = trainer(
@@ -234,7 +235,8 @@ def main():
             epochs=num_epoch,
             save_dir=save_dir,
             start_epoch = start_epoch,
-            dataset = DATASET
+            dataset = DATASET,
+            early_stopper = early_stopper
         )
 
         checkpoint = torch.load(save_dir + "/best_checkpoint.pth")
