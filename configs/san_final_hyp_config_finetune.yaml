@@ -48,6 +48,7 @@ paths: &PATH_OPTIONS
   - &HAM_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""./dataset/ISIC/ISIC2018_Task3_Validation_Input/""./dataset/ISIC/ISIC2018_Task3_Test_Input/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
   - &CHEXPERT_PATH /share/nvmedata/santosh/""/share/nvmedata/santosh/""/share/nvmedata/santosh/""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/train.csv""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/valid.csv""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/test_labels_v2.csv
+  - &CIFAR100_PATH ./dataset/cifar""./dataset/cifar/cifar1098_idxs.npy
 
 
 
@@ -55,19 +56,19 @@ paths: &PATH_OPTIONS
 
 
 ######CHANGE ONLY THIS#########
-LOSS: BCEWithLogitsLoss
+LOSS: CrossEntropyLoss
 NUM_EPOCHS : 30
 TASK: Classification
 PRETRAINING: ImageNet
-CLASSIFICATION: MultiLabel
+CLASSIFICATION: MultiClass
 LEARNING_SCHEDULER : CosineAnnealingLR
-SAVE_DIR: "/share/nvmedata/santosh/model_soups/runs/san_final_hyp_models/san-finetune/chexpert_final_hyp/densenet121_imagenet/"
-RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/chexpert_final_hyp/densenet121_imagenet/2024-01-16_20-24-41/" #CIFAR
+SAVE_DIR: ""
+RUN_NAME: "" #CIFAR
 CUDA_DEVICE: 0
-NUM_CLASSES: 13 #2 for RSNA, 10 for CIFAR
-DATASET: *CHEXPERT
-MODEL: DenseNet121
-PATH: *CHEXPERT_PATH
+NUM_CLASSES: 100 #2 for RSNA, 10 for CIFAR
+DATASET: *CIFAR100
+MODEL: ResNet50
+PATH: *CIFAR100_PATH
 RESUME_PATH: ""
 
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate

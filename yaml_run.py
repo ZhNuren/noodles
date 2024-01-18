@@ -19,7 +19,7 @@ def run_test_script():
     subprocess.run(["python", "test_script.py"])
 
 if __name__ == "__main__":
-    yaml_file_path = 'your_yaml_file.yaml'  # Update with your YAML file path
+    yaml_file_path = './configs/test_config.yaml'  # Update with your YAML file path
     config = read_yaml(yaml_file_path)
 
     models = ['ResNet50', 'DenseNet121', 'DeiT-S']  # Update with your list of models

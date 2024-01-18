@@ -703,7 +703,6 @@ def get_medical_densnet121(pretrained=False,num_classes=2):
 
 
 def get_densnet121(task, pretrained=False,num_classes=2):
-    print(task)
     if task == 'Classification':
         if pretrained:
             model = densenet121(weights=DenseNet121_Weights.IMAGENET1K_V1)

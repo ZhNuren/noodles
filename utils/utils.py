@@ -58,7 +58,6 @@ def greedy_souping(state_dicts, val_results, model_config, NUM_CLASSES, val_load
                 current_best = greedy_val_recall
                 best_ingredients = ingredient_indices
         elif 'Accuracy' in sort_by:
-            print('hooooooooooooooooo')
             print(f'Models {ingredient_indices} got {greedy_val_acc} on validation.')
             if greedy_val_acc > current_best:
                 current_best = greedy_val_acc
@@ -160,6 +159,26 @@ def get_dataset(DATASET, paths, augment, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NU
 
             val_dataset = Subset(valset, val_indices)
             train_dataset = Subset(trainset, train_indices)
+
+    elif DATASET == "Cifar100":
+            ##Cifar Dataset
+            trainset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=train_transform)
+            valset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=val_transform)
+            test_dataset = torchvision.datasets.CIFAR100(root=paths[0], train=False, transform=val_transform)
+
+            idxs = np.load(paths[1]).astype('int')
+            val_indices = []
+            train_indices = []
+            
+            for i in range(len(idxs)):
+                if idxs[i]:
+                    val_indices.append(i)
+                else:
+                    train_indices.append(i)
+
+            val_dataset = Subset(valset, val_indices)
+            train_dataset = Subset(trainset, train_indices)
+    
     elif DATASET == "Rsna":
         ##RSNA Dataset
         train_dataset = RSNADataset(csv_file=paths[1], data_folder=paths[0], split="train", pretraining = PRETRAINING, transform=train_transform)
