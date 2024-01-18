@@ -34,6 +34,7 @@ datasets: &DATASET_OPTIONS
   - &CIFAR10 Cifar10
   - &CIFAR100 Cifar100
   - &RSNA Rsna
+  - 
 
 NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
 DATASET: *CIFAR10

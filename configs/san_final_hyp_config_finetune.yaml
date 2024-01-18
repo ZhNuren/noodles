@@ -62,7 +62,7 @@ LEARNING_SCHEDULER : CosineAnnealingLR
 SAVE_DIR: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/rsna_final_hyp/deits_imagenet/"
 RUN_NAME: "./runs/san_final_hyp_models/san-initial_models/rsna_final_hyp/deits_imagenet/2024-01-13_00-32-08/" #CIFAR
 CUDA_DEVICE: 0
-NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR
+NUM_CLASSES: 2 #2 for RSNA, 10 for CIFAR
 DATASET: *APTOS
 MODEL: DeiT-S
 PATH: *APTOS_PATH

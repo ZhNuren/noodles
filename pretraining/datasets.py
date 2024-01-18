@@ -174,7 +174,7 @@ class Transforms:
                 A.CLAHE(clip_limit=4.0, p=0.7),
                 A.HueSaturationValue(hue_shift_limit=10, sat_shift_limit=20, val_shift_limit=10, p=0.5),
                 A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=15, border_mode=0, p=0.85),
-                A.Resize(224, 224),
+                A.Resize(224, 224, interpolation=2),
                 A.Cutout(max_h_size=int(224 * 0.375), max_w_size=int(224 * 0.375), num_holes=1, p=0.7),
             ])
 
