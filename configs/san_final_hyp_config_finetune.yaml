@@ -57,7 +57,7 @@ paths: &PATH_OPTIONS
 
 ######CHANGE ONLY THIS#########
 LOSS: CrossEntropyLoss
-NUM_EPOCHS : 30
+NUM_EPOCHS : 50
 TASK: Classification
 PRETRAINING: ImageNet
 CLASSIFICATION: MultiClass

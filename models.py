@@ -323,7 +323,6 @@ def get_resnet50(task, pretrained=False,num_classes=10):
         )
     else:
         if pretrained:
-            print('hooooooooooooo')
             model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
 
             # Freeze model weights

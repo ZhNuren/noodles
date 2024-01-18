@@ -230,7 +230,7 @@ test_results_copy = results_test_df.copy()
 
 
 for j in range(3,8):
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>LR{j}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    print(f">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>LR{j}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     indexes = []
     for i in val_results_copy.iterrows():
         if f"-0{j}" in i[1]['Learning Rate']:
@@ -243,8 +243,8 @@ for j in range(3,8):
     sorted_val = val_results_copy.sort_values(by= val_sort_by,ascending=False)
     sorted_test = test_results_copy.sort_values(by= test_sort_by,ascending=False)
 
-    sorted_val.to_csv(os.path.join(test_save_path, "VAL_RESULTS_LR<-0{j}.csv"), index=False)
-    sorted_test.to_csv(os.path.join(test_save_path, "TEST_RESULTS_LR<-0{j}.csv"), index=False)
+    sorted_val.to_csv(os.path.join(test_save_path, f"VAL_RESULTS_LR<-0{j}.csv"), index=False)
+    sorted_test.to_csv(os.path.join(test_save_path, f"TEST_RESULTS_LR<-0{j}.csv"), index=False)
 
     #remove from lr_state_dicts all the state_dicts with indexes
     lr_state_dicts = [i for j, i in enumerate(lr_state_dicts) if j not in indexes]
