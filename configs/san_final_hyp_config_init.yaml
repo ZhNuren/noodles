@@ -39,7 +39,7 @@ paths: &PATH_OPTIONS
   - &HAM_PATH ./dataset/ISIC/ISIC2018_Task3_Training_Input/""./dataset/ISIC/ISIC2018_Task3_Validation_Input/""./dataset/ISIC/ISIC2018_Task3_Test_Input/""./dataset/ISIC/ISIC2018_Task3_Training_GroundTruth/ISIC2018_Task3_Training_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Validation_GroundTruth/ISIC2018_Task3_Validation_GroundTruth.csv""./dataset/ISIC/ISIC2018_Task3_Test_GroundTruth/ISIC2018_Task3_Test_GroundTruth.csv
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
   - &CHEXPERT_PATH /share/nvmedata/santosh/""/share/nvmedata/santosh/""/share/nvmedata/santosh/""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/train.csv""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/valid.csv""/share/nvmedata/santosh/CheXpert-v1.0_224/csv/test_labels_v2.csv
-  - &CIFAR100_PATH ./dataset/cifar""./dataset/cifar/cifar1098_idxs.npy
+  - &CIFAR100_PATH ./dataset/cifar100""./dataset/cifar100/cifar1098_idxs.npy
 
 ######CHANGE ONLY THIS#######
 TASK: Classification
@@ -54,5 +54,5 @@ CUDA_DEVICE: 0
 NUM_CLASSES: 100 #2 for RSNA, 10 for CIFAR
 DATASET: *CIFAR100
 PATH: *CIFAR100_PATH
-SAVE_DIR: "/l/users/nuren.zhaksylyk/"
+SAVE_DIR: "/l/users/nuren.zhaksylyk/model_soups/runs/init/cifar100/deit-s"
 #source /share/sda/nurenzhaksylyk/SEGA2023/SegaAlgorithm/sega/bin/activate

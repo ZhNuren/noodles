@@ -122,7 +122,7 @@ def train_step(
         train_acc /= len(train_loader)
         train_macro_f1 = f1_score(train_targets, train_predictions, average='macro')
         train_macro_recall = recall_score(train_targets, train_predictions, average='macro')
-        train_auc = roc_auc_score(train_targets, train_predictions, multi_class='ovr', average = 'weighted')
+        train_auc = 0#roc_auc_score(train_targets, train_predictions, multi_class='ovr', average = 'weighted')
 
     else:
         for task in range(len(task_targets)):

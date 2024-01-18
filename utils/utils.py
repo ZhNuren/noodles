@@ -143,7 +143,7 @@ def get_dataset(DATASET, paths, augment, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NU
 
     if DATASET == "Cifar10":
             ##Cifar Dataset
-            trainset = torchvision.datasets.CIFAR10(root=paths[0], train=True, transform=train_transform)
+            trainset = torchvision.datasets.CIFAR10(root=paths[0], train=True, transform=train_transform, download=True)
             valset = torchvision.datasets.CIFAR10(root=paths[0], train=True, transform=val_transform)
             test_dataset = torchvision.datasets.CIFAR10(root=paths[0], train=False, transform=val_transform)
 
@@ -162,7 +162,7 @@ def get_dataset(DATASET, paths, augment, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NU
 
     elif DATASET == "Cifar100":
             ##Cifar Dataset
-            trainset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=train_transform)
+            trainset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=train_transform, download=True)
             valset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=val_transform)
             test_dataset = torchvision.datasets.CIFAR100(root=paths[0], train=False, transform=val_transform)
 
