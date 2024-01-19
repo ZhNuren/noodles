@@ -27,16 +27,29 @@ def souping(model, state_dicts, alphal):
     model.load_state_dict(sd)
     return model
 
-def greedy_souping(state_dicts, val_results, model_config, NUM_CLASSES, val_loader, train_loader, loss, DEVICE, CLASSIFICATION, sort_by):
-    ranked_candidates = [i for i in range(len(state_dicts))]
+def greedy_souping(state_dicts, val_results, model_config, NUM_CLASSES, val_loader, train_loader, loss, DEVICE, CLASSIFICATION, sort_by, val_models = None):
+    ranked_candidates = [i for i in range(len(val_models))]
     ranked_candidates.sort(key=lambda x: -val_results[x])
-    print(ranked_candidates)
+
+
+    ranked_candidates_names = [i for i in range(len(val_models))]
+    ranked_candidates_names.sort(key=lambda x: -val_results[x])
+
     current_best = val_results[ranked_candidates[0]]
+
+    # if val_models:
+    #     ranked_candidates = [val_models[i] for i in ranked_candidates]
+    print(ranked_candidates_names)
+
     print('currentttttttt bestttttttt', current_best)
+
+    
     best_ingredients = ranked_candidates[:1]
+    best_ingredients_names = ranked_candidates_names[:1]
     for i in range(1, len(state_dicts)):
         # add current index to the ingredients
         ingredient_indices = best_ingredients + [ranked_candidates[i]]
+        ingredient_names = best_ingredients_names + [ranked_candidates_names[i]]
         alphal = [0 for i in range(len(state_dicts))]
         for j in ingredient_indices:
             alphal[j] = 1 / len(ingredient_indices)
@@ -48,40 +61,48 @@ def greedy_souping(state_dicts, val_results, model_config, NUM_CLASSES, val_load
         greedy_model.to(DEVICE)
         greedy_val_loss, greedy_val_acc, greedy_val_f1, greedy_val_recall, greedy_val_kappa, greedy_val_auc = val_step(greedy_model, val_loader, train_loader, loss, DEVICE, CLASSIFICATION)
         if 'F1' in sort_by:            
-            print(f'Models {ingredient_indices} got {greedy_val_f1} on validation.')
+            print(f'Models {ingredient_names} got {greedy_val_f1} on validation.')
             if greedy_val_f1 > current_best:
                 current_best = greedy_val_f1
                 best_ingredients = ingredient_indices
+                best_ingredients_names = ingredient_names
         elif 'Recall' in sort_by:
-            print(f'Models {ingredient_indices} got {greedy_val_recall} on validation.')
+            print(f'Models {ingredient_names} got {greedy_val_recall} on validation.')
             if greedy_val_recall > current_best:
                 current_best = greedy_val_recall
                 best_ingredients = ingredient_indices
+                best_ingredients_names = ingredient_names
+
         elif 'Accuracy' in sort_by:
-            print(f'Models {ingredient_indices} got {greedy_val_acc} on validation.')
+            print(f'Models {ingredient_names} got {greedy_val_acc} on validation.')
             if greedy_val_acc > current_best:
                 current_best = greedy_val_acc
                 best_ingredients = ingredient_indices
+                best_ingredients_names = ingredient_names
+
         elif 'Kappa' in sort_by:
-            print(f'Models {ingredient_indices} got {greedy_val_kappa} on validation.')
+            print(f'Models {ingredient_names} got {greedy_val_kappa} on validation.')
             if greedy_val_kappa > current_best:
                 current_best = greedy_val_kappa
                 best_ingredients = ingredient_indices
+                best_ingredients_names = ingredient_names
+
         elif 'AUC' in sort_by:
-            print(f'Models {ingredient_indices} got {greedy_val_auc}% on validation.')
+            print(f'Models {ingredient_names} got {greedy_val_auc}% on validation.')
             if greedy_val_auc > current_best:
                 current_best = greedy_val_auc
                 best_ingredients = ingredient_indices
+                best_ingredients_names = ingredient_names
 
     alphal = [0 for i in range(len(state_dicts))]
     for j in best_ingredients:
         alphal[j] = 1 / len(best_ingredients)
     greedy_model = souping(model, state_dicts, alphal)
-    return greedy_model, best_ingredients
+
+    return greedy_model, best_ingredients_names
 
 
 def get_dataset(DATASET, paths, augment, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NUM_WORKERS, TASK):
-    
     paths = paths.split('""')
     print(paths)
     if augment == "Minimal":

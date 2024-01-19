@@ -380,6 +380,7 @@ def reg_train_step(
         loss_fn: torch.nn.Module,
         optimizer: torch.optim.Optimizer,
         device: torch.device,
+        classification=None,
 ):
     """
     Train model for one epoch.
@@ -434,8 +435,10 @@ def reg_train_step(
 def reg_val_step(
         model: torch.nn.Module,
         val_loader,
+        train_loader,
         loss_fn: torch.nn.Module,
         device: torch.device,
+        classification=None,
 ):
     """
     Evaluate model on val data.
@@ -476,8 +479,9 @@ def reg_val_step(
     val_macro_f1 = f1_score(val_targets, val_predictions, average='macro')
     val_macro_recall = recall_score(val_targets, val_predictions, average='macro')
     val_kappa = cohen_kappa_score(val_targets,val_predictions, weights = 'quadratic')
+    val_auc = 0
 
-    return val_loss, val_acc, val_macro_f1, val_macro_recall, val_kappa
+    return val_loss, val_acc, val_macro_f1, val_macro_recall, val_kappa, val_auc
 
 def reg_trainer(
         model: torch.nn.Module,
@@ -492,7 +496,8 @@ def reg_trainer(
         save_dir: str,
         early_stopper=None,
         linear_probing_epochs=None,
-        start_epoch = 1
+        start_epoch = 1,
+        classification=None,
 ):
     """
     Train and evaluate model.

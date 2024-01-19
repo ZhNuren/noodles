@@ -771,6 +771,7 @@ def get_densnet121(task, pretrained=False,num_classes=2):
 
 
 def get_CLIP(classnames, pretrained=False, num_classes=10):
+    classnames = ['Airplane', 'Automobile', 'Bird', 'Cat', 'Deer', 'Dog', 'Frog', 'Horse', 'Ship', 'Truck']
     base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit = False)
     template = utils.openai_imagenet_template
     clf = utils.zeroshot_classifier(base_model, classnames, template, 'cuda')
