@@ -1,0 +1,119 @@
+['./dataset/cifar', './dataset/cifar/cifar1098_idxs.npy']
+Cifar10 45000 5000 10000
+Best model Val Accuracy: 0.9818359375
+Second best model Val Accuracy: 0.9802734375
+Worst model Val Accuracy: 0.7875
+Best model Test Accuracy: 0.9767602848101266
+Second best model Test Accuracy: 0.9751780063291139
+Worst model Test Accuracy: 0.7881724683544303
+Uniform souping ...
+Greedy souping ...
+[22, 23, 17, 16, 12, 14, 21, 28, 13, 29, 15, 20, 6, 5, 10, 11, 9, 34, 7, 4, 35, 1, 8, 0, 26, 18, 19, 27, 3, 24, 30, 31, 25, 2, 32, 33, 36, 37, 40, 41, 38, 39, 42, 47, 43, 46, 45, 44]
+currentttttttt bestttttttt 0.9818359375
+Models [22, 23] got 0.98125 on validation.
+Models [22, 17] got 0.9837890625 on validation.
+Models [22, 17, 16] got 0.9828125 on validation.
+Models [22, 17, 12] got 0.9833984375 on validation.
+Models [22, 17, 14] got 0.981640625 on validation.
+Models [22, 17, 21] got 0.9810546875 on validation.
+Models [22, 17, 28] got 0.98203125 on validation.
+Models [22, 17, 13] got 0.9818359375 on validation.
+Models [22, 17, 29] got 0.9818359375 on validation.
+Models [22, 17, 15] got 0.9814453125 on validation.
+Models [22, 17, 20] got 0.98203125 on validation.
+Models [22, 17, 6] got 0.9630859375 on validation.
+Models [22, 17, 5] got 0.2373046875 on validation.
+Models [22, 17, 10] got 0.9685546875 on validation.
+Models [22, 17, 11] got 0.9685546875 on validation.
+Models [22, 17, 9] got 0.9673828125 on validation.
+Models [22, 17, 34] got 0.9814453125 on validation.
+Models [22, 17, 7] got 0.9630859375 on validation.
+Models [22, 17, 4] got 0.176953125 on validation.
+Models [22, 17, 35] got 0.98125 on validation.
+Models [22, 17, 1] got 0.2876953125 on validation.
+Models [22, 17, 8] got 0.9587890625 on validation.
+Models [22, 17, 0] got 0.2697265625 on validation.
+Models [22, 17, 26] got 0.9806640625 on validation.
+Models [22, 17, 18] got 0.98125 on validation.
+Models [22, 17, 19] got 0.9814453125 on validation.
+Models [22, 17, 27] got 0.98046875 on validation.
+Models [22, 17, 3] got 0.2654296875 on validation.
+Models [22, 17, 24] got 0.9818359375 on validation.
+Models [22, 17, 30] got 0.9818359375 on validation.
+Models [22, 17, 31] got 0.98125 on validation.
+Models [22, 17, 25] got 0.981640625 on validation.
+Models [22, 17, 2] got 0.2796875 on validation.
+Models [22, 17, 32] got 0.9798828125 on validation.
+Models [22, 17, 33] got 0.9794921875 on validation.
+Models [22, 17, 36] got 0.9798828125 on validation.
+Models [22, 17, 37] got 0.980078125 on validation.
+Models [22, 17, 40] got 0.9787109375 on validation.
+Models [22, 17, 41] got 0.97890625 on validation.
+Models [22, 17, 38] got 0.9775390625 on validation.
+Models [22, 17, 39] got 0.977734375 on validation.
+Models [22, 17, 42] got 0.977734375 on validation.
+Models [22, 17, 47] got 0.9779296875 on validation.
+Models [22, 17, 43] got 0.9775390625 on validation.
+Models [22, 17, 46] got 0.978125 on validation.
+Models [22, 17, 45] got 0.97734375 on validation.
+Models [22, 17, 44] got 0.9771484375 on validation.
+VAL INGREDIENTS [22, 17]
+[23, 22, 16, 17, 13, 20, 28, 11, 15, 29, 14, 21, 8, 10, 4, 12, 9, 5, 7, 34, 35, 6, 27, 26, 1, 19, 18, 3, 24, 25, 0, 31, 2, 30, 32, 33, 36, 37, 40, 41, 39, 38, 42, 43, 46, 47, 45, 44]
+currentttttttt bestttttttt 0.9767602848101266
+Models [23, 22] got 0.9774525316455697 on validation.
+Models [23, 22, 16] got 0.9768591772151899 on validation.
+Models [23, 22, 17] got 0.9778481012658228 on validation.
+Models [23, 22, 17, 13] got 0.9785403481012658 on validation.
+Models [23, 22, 17, 13, 20] got 0.9777492088607594 on validation.
+Models [23, 22, 17, 13, 28] got 0.9781447784810127 on validation.
+Models [23, 22, 17, 13, 11] got 0.9648931962025317 on validation.
+Models [23, 22, 17, 13, 15] got 0.9773536392405063 on validation.
+Models [23, 22, 17, 13, 29] got 0.9783425632911392 on validation.
+Models [23, 22, 17, 13, 14] got 0.9778481012658228 on validation.
+Models [23, 22, 17, 13, 21] got 0.9783425632911392 on validation.
+Models [23, 22, 17, 13, 8] got 0.9637064873417721 on validation.
+Models [23, 22, 17, 13, 10] got 0.9642998417721519 on validation.
+Models [23, 22, 17, 13, 4] got 0.17256724683544303 on validation.
+Models [23, 22, 17, 13, 12] got 0.9779469936708861 on validation.
+Models [23, 22, 17, 13, 9] got 0.9669699367088608 on validation.
+Models [23, 22, 17, 13, 5] got 0.21687104430379747 on validation.
+Models [23, 22, 17, 13, 7] got 0.9642009493670886 on validation.
+Models [23, 22, 17, 13, 34] got 0.9777492088607594 on validation.
+Models [23, 22, 17, 13, 35] got 0.9776503164556962 on validation.
+Models [23, 22, 17, 13, 6] got 0.9625197784810127 on validation.
+Models [23, 22, 17, 13, 27] got 0.9770569620253164 on validation.
+Models [23, 22, 17, 13, 26] got 0.9774525316455697 on validation.
+Models [23, 22, 17, 13, 1] got 0.2466376582278481 on validation.
+Models [23, 22, 17, 13, 19] got 0.9778481012658228 on validation.
+Models [23, 22, 17, 13, 18] got 0.9775514240506329 on validation.
+Models [23, 22, 17, 13, 3] got 0.24317642405063292 on validation.
+Models [23, 22, 17, 13, 24] got 0.9773536392405063 on validation.
+Models [23, 22, 17, 13, 25] got 0.9768591772151899 on validation.
+Models [23, 22, 17, 13, 0] got 0.25187895569620256 on validation.
+Models [23, 22, 17, 13, 31] got 0.9769580696202531 on validation.
+Models [23, 22, 17, 13, 2] got 0.24980221518987342 on validation.
+Models [23, 22, 17, 13, 30] got 0.9770569620253164 on validation.
+Models [23, 22, 17, 13, 32] got 0.9766613924050633 on validation.
+Models [23, 22, 17, 13, 33] got 0.9773536392405063 on validation.
+Models [23, 22, 17, 13, 36] got 0.9765625 on validation.
+Models [23, 22, 17, 13, 37] got 0.9765625 on validation.
+Models [23, 22, 17, 13, 40] got 0.9762658227848101 on validation.
+Models [23, 22, 17, 13, 41] got 0.9763647151898734 on validation.
+Models [23, 22, 17, 13, 39] got 0.9753757911392406 on validation.
+Models [23, 22, 17, 13, 38] got 0.9755735759493671 on validation.
+Models [23, 22, 17, 13, 42] got 0.9756724683544303 on validation.
+Models [23, 22, 17, 13, 43] got 0.9756724683544303 on validation.
+Models [23, 22, 17, 13, 46] got 0.9752768987341772 on validation.
+Models [23, 22, 17, 13, 47] got 0.9752768987341772 on validation.
+Models [23, 22, 17, 13, 45] got 0.9751780063291139 on validation.
+Models [23, 22, 17, 13, 44] got 0.9750791139240507 on validation.
+TEST INGREDIENTS [23, 22, 17, 13]
+Creating table ...
+|    | Model Name   |   Test Accuracy |   Test F1 |   Test Recall |   Test Kappa |   Test AUC | Augmentation   | Learning Rate   | SEED   |
+|---:|:-------------|----------------:|----------:|--------------:|-------------:|-----------:|:---------------|:----------------|:-------|
+|  0 | Best 1: 23   |        0.97676  |  0.976477 |        0.9765 |     0.971016 |          0 | Heavy          | 5.00e-05        | 1      |
+|  1 | Best 2: 22   |        0.975178 |  0.974868 |        0.9749 |     0.967155 |          0 | Heavy          | 5.00e-05        | 0      |
+|  2 | Worst: 44    |        0.788172 |  0.779724 |        0.7865 |     0.760251 |          0 | Medium         | 1.00e-07        | 0      |
+|  3 | Uniform      |        0.31161  |  0.23096  |        0.3109 |     0.320568 |          0 | None           | None            | None   |
+|  4 | Greedy       |        0.976167 |  0.976578 |        0.9766 |     0.970943 |          0 | None           | None            | None   |
+Table saved to ALL.csv

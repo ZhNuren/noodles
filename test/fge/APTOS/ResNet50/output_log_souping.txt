@@ -1,0 +1,28 @@
+['./dataset/224_data/DR/aptos/', './dataset/224_data/DR/aptos/aptos_dataset_splits.csv']
+APTOS 2929 366 367
+Uniform souping ...
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-20.pt
+2 [1, 2] 2 [0.5, 0.5]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-22.pt
+3 [1, 2, 3] 3 [0.6666666666666666, 0.33333333333333337]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-24.pt
+4 [1, 2, 3, 4] 4 [0.75, 0.25]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-12.pt
+5 [1, 2, 3, 4, 5] 5 [0.8, 0.19999999999999996]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-23.pt
+6 [1, 2, 3, 4, 5, 6] 6 [0.8333333333333334, 0.16666666666666663]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-21.pt
+7 [1, 2, 3, 4, 5, 6, 7] 7 [0.8571428571428571, 0.1428571428571429]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-25.pt
+8 [1, 2, 3, 4, 5, 6, 7, 8] 8 [0.875, 0.125]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-14.pt
+9 [1, 2, 3, 4, 5, 6, 7, 8, 9] 9 [0.8888888888888888, 0.11111111111111116]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-13.pt
+10 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 10 [0.9, 0.09999999999999998]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-17.pt
+11 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] 11 [0.9090909090909091, 0.09090909090909094]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-19.pt
+12 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] 12 [0.9166666666666666, 0.08333333333333337]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-15.pt
+13 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] 13 [0.9230769230769231, 0.07692307692307687]
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/APTOS/ResNet50/1.00e-03/fge-10.pt

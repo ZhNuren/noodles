@@ -1,0 +1,234 @@
+['./dataset/cifar', './dataset/cifar/cifar1098_idxs.npy']
+Cifar10 45000 5000 10000
+1.00e-04
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-0.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-1.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-10.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-11.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-12.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-13.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-14.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-15.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-16.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-17.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-18.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-19.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-2.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-20.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-21.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-22.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-23.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-24.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-25.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-3.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-4.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-5.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-6.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-7.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-8.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/1.00e-04/fge-9.pt
+1.00e-05
+5.00e-05
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-0.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-1.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-10.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-11.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-12.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-13.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-14.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-15.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-16.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-17.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-18.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-19.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-2.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-20.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-21.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-22.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-23.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-24.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-25.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-3.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-4.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-5.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-6.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-7.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-8.pt
+/l/users/santosh.sanjeev/model_soups/runs/test/fge/Cifar10/DeiT-S/5.00e-05/fge-9.pt
+5.00e-06
+output_log.txt
+    Model Name  Val Accuracy    Val F1  Val Recall  Val Kappa  Val AUC
+0            2      0.988086  0.987784      0.9878   0.985160        0
+1            3      0.988281  0.987986      0.9880   0.986728        0
+2            4      0.988086  0.987785      0.9878   0.984430        0
+3            5      0.987500  0.987180      0.9872   0.987117        0
+4            6      0.987109  0.986776      0.9868   0.985379        0
+5            7      0.988477  0.988183      0.9882   0.987318        0
+6            8      0.988086  0.987782      0.9878   0.987987        0
+7            9      0.987695  0.987367      0.9874   0.988315        0
+8           10      0.988281  0.987980      0.9880   0.987778        0
+9           11      0.987891  0.987585      0.9876   0.985920        0
+10          12      0.988867  0.988584      0.9886   0.988362        0
+11          13      0.989648  0.989384      0.9894   0.987208        0
+12          14      0.988477  0.988184      0.9882   0.986053        0
+13          15      0.989453  0.989190      0.9892   0.985907        0
+14          16      0.989844  0.989588      0.9896   0.986476        0
+15          17      0.989648  0.989385      0.9894   0.987292        0
+16          18      0.987891  0.987573      0.9876   0.984033        0
+17          19      0.987891  0.987572      0.9876   0.986796        0
+18          20      0.987891  0.987577      0.9876   0.986169        0
+19          21      0.988281  0.987991      0.9880   0.985950        0
+20          22      0.988867  0.988588      0.9886   0.985843        0
+21          23      0.988672  0.988383      0.9884   0.986820        0
+22          24      0.988867  0.988584      0.9886   0.986614        0
+23          25      0.987891  0.987579      0.9876   0.985235        0
+24          26      0.987891  0.987587      0.9876   0.983928        0
+25          27      0.987305  0.986980      0.9870   0.985168        0
+26           2      0.989844  0.989590      0.9896   0.987853        0
+27           3      0.990430  0.990189      0.9902   0.989519        0
+28           4      0.990625  0.990394      0.9904   0.991169        0
+29           5      0.991211  0.990998      0.9910   0.990978        0
+30           6      0.989258  0.988993      0.9890   0.988469        0
+31           7      0.990039  0.989790      0.9898   0.990003        0
+32           8      0.990039  0.989799      0.9898   0.989689        0
+33           9      0.988672  0.988394      0.9884   0.987720        0
+34          10      0.990625  0.990390      0.9904   0.989545        0
+35          11      0.992188  0.991997      0.9920   0.991876        0
+36          12      0.991211  0.990993      0.9910   0.987901        0
+37          13      0.990430  0.990192      0.9902   0.989345        0
+38          14      0.990625  0.990395      0.9904   0.989315        0
+39          15      0.989648  0.989393      0.9894   0.989998        0
+40          16      0.990039  0.989787      0.9898   0.990276        0
+41          17      0.988867  0.988581      0.9886   0.988947        0
+42          18      0.988672  0.988374      0.9884   0.989577        0
+43          19      0.989648  0.989385      0.9894   0.989827        0
+44          20      0.990430  0.990186      0.9902   0.990747        0
+45          21      0.989844  0.989589      0.9896   0.988034        0
+46          22      0.989453  0.989193      0.9892   0.989322        0
+47          23      0.989844  0.989591      0.9896   0.987757        0
+48          24      0.990430  0.990197      0.9902   0.989628        0
+49          25      0.989062  0.988791      0.9888   0.986567        0
+50          26      0.990625  0.990390      0.9904   0.989799        0
+51          27      0.990430  0.990195      0.9902   0.989993        0
+    Model Name  Test Accuracy   Test F1  Test Recall  Test Kappa  Test AUC
+0            2       0.985957  0.985791       0.9858    0.980962         0
+1            3       0.985759  0.985593       0.9856    0.981443         0
+2            4       0.987144  0.986992       0.9870    0.982190         0
+3            5       0.984375  0.984202       0.9842    0.978217         0
+4            6       0.984869  0.984690       0.9847    0.979929         0
+5            7       0.985067  0.984893       0.9849    0.979194         0
+6            8       0.985265  0.985101       0.9851    0.980021         0
+7            9       0.985067  0.984895       0.9849    0.979588         0
+8           10       0.985858  0.985693       0.9857    0.980723         0
+9           11       0.986254  0.986092       0.9861    0.980438         0
+10          12       0.985957  0.985793       0.9858    0.981072         0
+11          13       0.986452  0.986299       0.9863    0.980246         0
+12          14       0.985957  0.985794       0.9858    0.982026         0
+13          15       0.986353  0.986197       0.9862    0.982649         0
+14          16       0.986155  0.985996       0.9860    0.982727         0
+15          17       0.986056  0.985893       0.9859    0.981978         0
+16          18       0.985562  0.985390       0.9854    0.981262         0
+17          19       0.985858  0.985693       0.9857    0.980946         0
+18          20       0.985957  0.985794       0.9858    0.981247         0
+19          21       0.986056  0.985906       0.9859    0.981201         0
+20          22       0.986056  0.985894       0.9859    0.980397         0
+21          23       0.987045  0.986892       0.9869    0.982215         0
+22          24       0.986155  0.985994       0.9860    0.980451         0
+23          25       0.986056  0.985886       0.9859    0.981311         0
+24          26       0.986056  0.985893       0.9859    0.981890         0
+25          27       0.986748  0.986591       0.9866    0.982053         0
+26           2       0.988034  0.987893       0.9879    0.984987         0
+27           3       0.987342  0.987199       0.9872    0.984673         0
+28           4       0.988232  0.988095       0.9881    0.987018         0
+29           5       0.987935  0.987808       0.9878    0.985033         0
+30           6       0.987935  0.987800       0.9878    0.984483         0
+31           7       0.988331  0.988196       0.9882    0.985291         0
+32           8       0.988627  0.988500       0.9885    0.986170         0
+33           9       0.987342  0.987204       0.9872    0.983124         0
+34          10       0.987342  0.987194       0.9872    0.984246         0
+35          11       0.987638  0.987493       0.9875    0.984626         0
+36          12       0.987144  0.986999       0.9870    0.985764         0
+37          13       0.987737  0.987602       0.9876    0.984631         0
+38          14       0.988133  0.988001       0.9880    0.984944         0
+39          15       0.987737  0.987595       0.9876    0.984731         0
+40          16       0.987045  0.986891       0.9869    0.983699         0
+41          17       0.987144  0.986998       0.9870    0.984696         0
+42          18       0.987342  0.987192       0.9872    0.983150         0
+43          19       0.987243  0.987095       0.9871    0.983887         0
+44          20       0.986452  0.986302       0.9863    0.981604         0
+45          21       0.987638  0.987491       0.9875    0.983673         0
+46          22       0.986946  0.986803       0.9868    0.983883         0
+47          23       0.986946  0.986793       0.9868    0.984049         0
+48          24       0.987441  0.987299       0.9873    0.983755         0
+49          25       0.986650  0.986499       0.9865    0.982254         0
+50          26       0.987441  0.987293       0.9873    0.985266         0
+51          27       0.987836  0.987696       0.9877    0.986522         0
+Uniform souping ...
+0.053918269019018396 0.9889240506329114 0.9887963741854009 0.9888000000000001 0.9847165807820552 0
+Greedy souping ...
+[35, 29, 36, 28, 34, 38, 50, 27, 37, 44, 48, 51, 31, 32, 40, 14, 26, 45, 47, 11, 15, 39, 43, 13, 46, 30, 49, 10, 20, 22, 41, 21, 33, 42, 5, 12, 1, 8, 19, 0, 2, 6, 9, 16, 17, 18, 23, 24, 7, 3, 25, 4]
+currentttttttt bestttttttt 0.9921875
+Models [35, 29] got 0.9919921875 on validation.
+Models [35, 36] got 0.9921875 on validation.
+Models [35, 28] got 0.991796875 on validation.
+Models [35, 34] got 0.9912109375 on validation.
+Models [35, 38] got 0.9919921875 on validation.
+Models [35, 50] got 0.991796875 on validation.
+Models [35, 27] got 0.9921875 on validation.
+Models [35, 37] got 0.99140625 on validation.
+Models [35, 44] got 0.9919921875 on validation.
+Models [35, 48] got 0.990625 on validation.
+Models [35, 51] got 0.991796875 on validation.
+Models [35, 31] got 0.9916015625 on validation.
+Models [35, 32] got 0.9919921875 on validation.
+Models [35, 40] got 0.991015625 on validation.
+Models [35, 14] got 0.9921875 on validation.
+Models [35, 26] got 0.9916015625 on validation.
+Models [35, 45] got 0.9908203125 on validation.
+Models [35, 47] got 0.9908203125 on validation.
+Models [35, 11] got 0.99296875 on validation.
+Models [35, 11, 15] got 0.9912109375 on validation.
+Models [35, 11, 39] got 0.993359375 on validation.
+Models [35, 11, 39, 43] got 0.99296875 on validation.
+Models [35, 11, 39, 13] got 0.99296875 on validation.
+Models [35, 11, 39, 46] got 0.9927734375 on validation.
+Models [35, 11, 39, 30] got 0.9921875 on validation.
+Models [35, 11, 39, 49] got 0.99296875 on validation.
+Models [35, 11, 39, 10] got 0.9935546875 on validation.
+Models [35, 11, 39, 10, 20] got 0.9923828125 on validation.
+Models [35, 11, 39, 10, 22] got 0.9919921875 on validation.
+Models [35, 11, 39, 10, 41] got 0.9935546875 on validation.
+Models [35, 11, 39, 10, 21] got 0.9921875 on validation.
+Models [35, 11, 39, 10, 33] got 0.99296875 on validation.
+Models [35, 11, 39, 10, 42] got 0.993359375 on validation.
+Models [35, 11, 39, 10, 5] got 0.9919921875 on validation.
+Models [35, 11, 39, 10, 12] got 0.992578125 on validation.
+Models [35, 11, 39, 10, 1] got 0.9921875 on validation.
+Models [35, 11, 39, 10, 8] got 0.9923828125 on validation.
+Models [35, 11, 39, 10, 19] got 0.9923828125 on validation.
+Models [35, 11, 39, 10, 0] got 0.9921875 on validation.
+Models [35, 11, 39, 10, 2] got 0.992578125 on validation.
+Models [35, 11, 39, 10, 6] got 0.991796875 on validation.
+Models [35, 11, 39, 10, 9] got 0.992578125 on validation.
+Models [35, 11, 39, 10, 16] got 0.9921875 on validation.
+Models [35, 11, 39, 10, 17] got 0.9923828125 on validation.
+Models [35, 11, 39, 10, 18] got 0.992578125 on validation.
+Models [35, 11, 39, 10, 23] got 0.9921875 on validation.
+Models [35, 11, 39, 10, 24] got 0.9923828125 on validation.
+Models [35, 11, 39, 10, 7] got 0.991796875 on validation.
+Models [35, 11, 39, 10, 3] got 0.9921875 on validation.
+Models [35, 11, 39, 10, 25] got 0.9923828125 on validation.
+Models [35, 11, 39, 10, 4] got 0.9919921875 on validation.
+VAL INGREDIENTS [35, 11, 39, 10]
+0.05639581547000236 0.9886273734177216 0.9884947321181443 0.9884999999999999 0.9849478661493696 0
+[32, 31, 28, 38, 26, 29, 30, 51, 37, 39, 35, 45, 48, 50, 27, 33, 34, 42, 43, 2, 36, 41, 21, 40, 46, 47, 25, 49, 11, 44, 13, 9, 14, 22, 15, 19, 20, 23, 24, 0, 10, 12, 18, 8, 17, 1, 16, 6, 5, 7, 4, 3]
+currentttttttt bestttttttt 0.9886273734177216
+Models [32, 31] got 0.9885284810126582 on validation.
+Models [32, 28] got 0.9889240506329114 on validation.
+Models [32, 28, 38] got 0.9883306962025317 on validation.
+Models [32, 28, 26] got 0.9884295886075949 on validation.
+Models [32, 28, 29] got 0.9888251582278481 on validation.
+Models [32, 28, 30] got 0.9887262658227848 on validation.
+Models [32, 28, 51] got 0.9888251582278481 on validation.
+Models [32, 28, 37] got 0.9887262658227848 on validation.
+Models [32, 28, 39] got 0.9888251582278481 on validation.

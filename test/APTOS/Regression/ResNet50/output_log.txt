@@ -1,0 +1,119 @@
+['./dataset/224_data/DR/aptos/', './dataset/224_data/DR/aptos/aptos_dataset_splits.csv']
+APTOS 2929 366 367
+Best model Val Kappa: 0.9245896385156017
+Second best model Val Kappa: 0.922614656699447
+Worst model Val Kappa: 0.5674164451259935
+Best model Test Kappa: 0.9282823407536464
+Second best model Test Kappa: 0.9260634317619294
+Worst model Test Kappa: 0.5941664233001808
+Uniform souping ...
+Greedy souping ...
+[8, 2, 16, 0, 7, 9, 11, 14, 13, 15, 10, 3, 17, 5, 1, 4, 20, 6, 23, 21, 22, 28, 12, 29, 19, 18, 30, 31, 24, 25, 34, 35, 26, 27, 37, 36, 40, 41, 33, 32, 43, 42, 46, 47, 39, 38, 44, 45]
+currentttttttt bestttttttt 0.9245896385156017
+Models [8, 2] got 0.0 on validation.
+Models [8, 16] got 0.0 on validation.
+Models [8, 0] got 0.0 on validation.
+Models [8, 7] got 0.0 on validation.
+Models [8, 9] got 0.0 on validation.
+Models [8, 11] got 0.0 on validation.
+Models [8, 14] got 0.0 on validation.
+Models [8, 13] got 0.0 on validation.
+Models [8, 15] got 0.0 on validation.
+Models [8, 10] got 0.0 on validation.
+Models [8, 3] got 0.0 on validation.
+Models [8, 17] got 0.0 on validation.
+Models [8, 5] got 0.0 on validation.
+Models [8, 1] got 0.0 on validation.
+Models [8, 4] got 0.0 on validation.
+Models [8, 20] got 0.0 on validation.
+Models [8, 6] got 0.0 on validation.
+Models [8, 23] got 0.0 on validation.
+Models [8, 21] got 0.0 on validation.
+Models [8, 22] got 0.0 on validation.
+Models [8, 28] got 0.0 on validation.
+Models [8, 12] got 0.0 on validation.
+Models [8, 29] got 0.0 on validation.
+Models [8, 19] got 0.0 on validation.
+Models [8, 18] got 0.0 on validation.
+Models [8, 30] got 0.0 on validation.
+Models [8, 31] got 0.0 on validation.
+Models [8, 24] got 0.0 on validation.
+Models [8, 25] got 0.0 on validation.
+Models [8, 34] got 0.0 on validation.
+Models [8, 35] got 0.0 on validation.
+Models [8, 26] got 0.0 on validation.
+Models [8, 27] got 0.0 on validation.
+Models [8, 37] got 0.0 on validation.
+Models [8, 36] got 0.0 on validation.
+Models [8, 40] got 0.0 on validation.
+Models [8, 41] got 0.0 on validation.
+Models [8, 33] got 0.0 on validation.
+Models [8, 32] got 0.0 on validation.
+Models [8, 43] got 0.0 on validation.
+Models [8, 42] got 0.0 on validation.
+Models [8, 46] got 0.0 on validation.
+Models [8, 47] got 0.0 on validation.
+Models [8, 39] got 0.0 on validation.
+Models [8, 38] got 0.0 on validation.
+Models [8, 44] got 0.0 on validation.
+Models [8, 45] got 0.0 on validation.
+VAL INGREDIENTS [8]
+[7, 10, 11, 3, 0, 4, 9, 2, 1, 8, 6, 15, 5, 22, 12, 14, 13, 23, 21, 18, 20, 19, 17, 16, 25, 29, 31, 24, 26, 28, 30, 27, 35, 34, 36, 37, 33, 41, 32, 40, 43, 42, 47, 46, 39, 38, 45, 44]
+currentttttttt bestttttttt 0.9282823407536464
+Models [7, 10] got 0.0 on validation.
+Models [7, 11] got 0.0 on validation.
+Models [7, 3] got 0.0 on validation.
+Models [7, 0] got 0.0 on validation.
+Models [7, 4] got 0.0 on validation.
+Models [7, 9] got 0.0 on validation.
+Models [7, 2] got 0.0 on validation.
+Models [7, 1] got 0.0 on validation.
+Models [7, 8] got 0.0 on validation.
+Models [7, 6] got 0.0 on validation.
+Models [7, 15] got 0.0 on validation.
+Models [7, 5] got 0.0 on validation.
+Models [7, 22] got 0.0 on validation.
+Models [7, 12] got 0.0 on validation.
+Models [7, 14] got 0.0 on validation.
+Models [7, 13] got 0.0 on validation.
+Models [7, 23] got 0.0 on validation.
+Models [7, 21] got 0.0 on validation.
+Models [7, 18] got 0.0 on validation.
+Models [7, 20] got 0.0 on validation.
+Models [7, 19] got 0.0 on validation.
+Models [7, 17] got 0.0 on validation.
+Models [7, 16] got 0.0 on validation.
+Models [7, 25] got 0.0 on validation.
+Models [7, 29] got 0.0 on validation.
+Models [7, 31] got 0.0 on validation.
+Models [7, 24] got 0.0 on validation.
+Models [7, 26] got 0.0 on validation.
+Models [7, 28] got 0.0 on validation.
+Models [7, 30] got 0.0 on validation.
+Models [7, 27] got 0.0 on validation.
+Models [7, 35] got 0.0 on validation.
+Models [7, 34] got 0.0 on validation.
+Models [7, 36] got 0.0 on validation.
+Models [7, 37] got 0.0 on validation.
+Models [7, 33] got 0.0 on validation.
+Models [7, 41] got 0.0 on validation.
+Models [7, 32] got 0.0 on validation.
+Models [7, 40] got 0.0 on validation.
+Models [7, 43] got 0.0 on validation.
+Models [7, 42] got 0.0 on validation.
+Models [7, 47] got 0.0 on validation.
+Models [7, 46] got 0.0 on validation.
+Models [7, 39] got 0.0 on validation.
+Models [7, 38] got 0.0 on validation.
+Models [7, 45] got 0.0 on validation.
+Models [7, 44] got 0.0 on validation.
+TEST INGREDIENTS [7]
+Creating table ...
+|    | Model Name   |   Test Accuracy |   Test F1 |   Test Recall |   Test Kappa |   Test AUC | Augmentation   | Learning Rate   | SEED   |
+|---:|:-------------|----------------:|----------:|--------------:|-------------:|-----------:|:---------------|:----------------|:-------|
+|  0 | Best 1: 7    |        0.830565 |  0.664319 |      0.66427  |     0.928282 |          0 | Minimal        | 5.00e-04        | 1      |
+|  1 | Best 2: 10   |        0.838166 |  0.671687 |      0.681525 |     0.926063 |          0 | Heavy          | 5.00e-04        | 0      |
+|  2 | Worst: 44    |        0.461454 |  0.32312  |      0.379732 |     0.594166 |          0 | Medium         | 1.00e-07        | 0      |
+|  3 | Uniform      |        0.726609 |  0.486331 |      0.525502 |     0.810095 |          0 | None           | None            | None   |
+|  4 | Greedy       |        0.817544 |  0.671086 |      0.690872 |     0.915052 |          0 | None           | None            | None   |
+Table saved to ALL.csv

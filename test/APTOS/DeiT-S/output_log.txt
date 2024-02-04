@@ -1,0 +1,2 @@
+['./dataset/224_data/DR/aptos/', './dataset/224_data/DR/aptos/aptos_dataset_splits.csv']
+APTOS 2929 366 367

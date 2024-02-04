@@ -1,0 +1,119 @@
+['./dataset/224_data/DR/aptos/', './dataset/224_data/DR/aptos/aptos_dataset_splits.csv']
+APTOS 2929 366 367
+Best model Val F1: 0.7627742530914445
+Second best model Val F1: 0.7618971989867512
+Worst model Val F1: 0.324598592752751
+Best model Test F1: 0.7104709855149739
+Second best model Test F1: 0.7099145269734213
+Worst model Test F1: 0.34017292276905564
+Uniform souping ...
+Greedy souping ...
+[3, 12, 17, 16, 15, 2, 10, 22, 20, 21, 19, 1, 6, 8, 23, 25, 14, 18, 26, 7, 9, 24, 30, 13, 4, 28, 5, 29, 31, 27, 11, 0, 32, 35, 34, 33, 36, 37, 38, 39, 42, 43, 45, 40, 44, 41, 46, 47]
+currentttttttt bestttttttt 0.7627742530914445
+Models [3, 12] got 0.6608818241843544 on validation.
+Models [3, 17] got 0.6113321665205846 on validation.
+Models [3, 16] got 0.6145421352424122 on validation.
+Models [3, 15] got 0.6844817361845479 on validation.
+Models [3, 2] got 0.6956169912557045 on validation.
+Models [3, 10] got 0.7003655658652417 on validation.
+Models [3, 22] got 0.6291737046969832 on validation.
+Models [3, 20] got 0.6389680795395081 on validation.
+Models [3, 21] got 0.6553349495953047 on validation.
+Models [3, 19] got 0.6365619932792936 on validation.
+Models [3, 1] got 0.595525947140678 on validation.
+Models [3, 6] got 0.6700695288139603 on validation.
+Models [3, 8] got 0.6680985400107782 on validation.
+Models [3, 23] got 0.6230953706170606 on validation.
+Models [3, 25] got 0.6346976339943091 on validation.
+Models [3, 14] got 0.6614558056267924 on validation.
+Models [3, 18] got 0.6414637284348542 on validation.
+Models [3, 26] got 0.6606371740238322 on validation.
+Models [3, 7] got 0.6863701970855713 on validation.
+Models [3, 9] got 0.6517008133997702 on validation.
+Models [3, 24] got 0.6414637284348542 on validation.
+Models [3, 30] got 0.6365619932792936 on validation.
+Models [3, 13] got 0.6414637284348542 on validation.
+Models [3, 4] got 0.6446193491594729 on validation.
+Models [3, 28] got 0.6077773045023324 on validation.
+Models [3, 5] got 0.6690986216848286 on validation.
+Models [3, 29] got 0.6095356460381524 on validation.
+Models [3, 31] got 0.6350583147792909 on validation.
+Models [3, 27] got 0.6606371740238322 on validation.
+Models [3, 11] got 0.6446415469413572 on validation.
+Models [3, 0] got 0.6416530715141038 on validation.
+Models [3, 32] got 0.6536046629365787 on validation.
+Models [3, 35] got 0.6184935337039693 on validation.
+Models [3, 34] got 0.6184935337039693 on validation.
+Models [3, 33] got 0.6536046629365787 on validation.
+Models [3, 36] got 0.6401458023021162 on validation.
+Models [3, 37] got 0.6401458023021162 on validation.
+Models [3, 38] got 0.625046705297489 on validation.
+Models [3, 39] got 0.625046705297489 on validation.
+Models [3, 42] got 0.6117351912196021 on validation.
+Models [3, 43] got 0.6117351912196021 on validation.
+Models [3, 45] got 0.6274747474747475 on validation.
+Models [3, 40] got 0.6053882282837135 on validation.
+Models [3, 44] got 0.624503350259575 on validation.
+Models [3, 41] got 0.6053882282837135 on validation.
+Models [3, 46] got 0.6017869829675002 on validation.
+Models [3, 47] got 0.6066130894113494 on validation.
+VAL INGREDIENTS [3]
+[17, 2, 5, 10, 16, 22, 3, 8, 4, 6, 19, 13, 15, 1, 23, 20, 11, 7, 14, 12, 31, 9, 25, 28, 24, 18, 29, 21, 30, 26, 27, 33, 32, 34, 35, 0, 37, 36, 39, 38, 41, 40, 42, 43, 47, 46, 44, 45]
+currentttttttt bestttttttt 0.7104709855149739
+Models [17, 2] got 0.6047400552663711 on validation.
+Models [17, 5] got 0.6600625802414178 on validation.
+Models [17, 10] got 0.7025412639426809 on validation.
+Models [17, 16] got 0.6895818832162786 on validation.
+Models [17, 22] got 0.7059728774097144 on validation.
+Models [17, 3] got 0.5696244973892057 on validation.
+Models [17, 8] got 0.5960378650108215 on validation.
+Models [17, 4] got 0.6587826524521785 on validation.
+Models [17, 6] got 0.5993475426671169 on validation.
+Models [17, 19] got 0.6975140610250863 on validation.
+Models [17, 13] got 0.6425354645856842 on validation.
+Models [17, 15] got 0.6771015699324415 on validation.
+Models [17, 1] got 0.6224969457377216 on validation.
+Models [17, 23] got 0.7064842108677725 on validation.
+Models [17, 20] got 0.6825701468883287 on validation.
+Models [17, 11] got 0.686150639780494 on validation.
+Models [17, 7] got 0.7079193415022293 on validation.
+Models [17, 14] got 0.6619630369630369 on validation.
+Models [17, 12] got 0.6656763221522948 on validation.
+Models [17, 31] got 0.673585070364574 on validation.
+Models [17, 9] got 0.6345497435380313 on validation.
+Models [17, 25] got 0.6834843932121967 on validation.
+Models [17, 28] got 0.6566945792575083 on validation.
+Models [17, 24] got 0.6879190658885008 on validation.
+Models [17, 18] got 0.6671822964341161 on validation.
+Models [17, 29] got 0.6510844065300933 on validation.
+Models [17, 21] got 0.6678701201500803 on validation.
+Models [17, 30] got 0.6596539976234326 on validation.
+Models [17, 26] got 0.6396544228241536 on validation.
+Models [17, 27] got 0.6396544228241536 on validation.
+Models [17, 33] got 0.641526629187681 on validation.
+Models [17, 32] got 0.641526629187681 on validation.
+Models [17, 34] got 0.6320926340582332 on validation.
+Models [17, 35] got 0.6320926340582332 on validation.
+Models [17, 0] got 0.5572831996400202 on validation.
+Models [17, 37] got 0.5574002770295051 on validation.
+Models [17, 36] got 0.5574002770295051 on validation.
+Models [17, 39] got 0.5477713605016501 on validation.
+Models [17, 38] got 0.5477713605016501 on validation.
+Models [17, 41] got 0.5504463620588416 on validation.
+Models [17, 40] got 0.5420224995526928 on validation.
+Models [17, 42] got 0.5590280854909881 on validation.
+Models [17, 43] got 0.5590280854909881 on validation.
+Models [17, 47] got 0.5241666295335019 on validation.
+Models [17, 46] got 0.5192712141875114 on validation.
+Models [17, 44] got 0.5198872579114807 on validation.
+Models [17, 45] got 0.5198872579114807 on validation.
+TEST INGREDIENTS [17]
+Creating table ...
+|    | Model Name   |   Test Accuracy |   Test F1 |   Test Recall |   Test Kappa |   Test AUC | Augmentation   | Learning Rate   | SEED   |
+|---:|:-------------|----------------:|----------:|--------------:|-------------:|-----------:|:---------------|:----------------|:-------|
+|  0 | Best 1: 17   |        0.85419  |  0.710471 |      0.681064 |     0.89867  |          0 | Heavy          | 1.00e-04        | 1      |
+|  1 | Best 2: 2    |        0.841169 |  0.709915 |      0.705988 |     0.917388 |          0 | Medium         | 1.00e-03        | 0      |
+|  2 | Worst: 45    |        0.690761 |  0.340173 |      0.361039 |     0.609009 |          0 | Medium         | 1.00e-07        | 1      |
+|  3 | Uniform      |        0.800723 |  0.543814 |      0.529309 |     0.855534 |          0 | None           | None            | None   |
+|  4 | Greedy       |        0.841169 |  0.690735 |      0.678165 |     0.907171 |          0 | None           | None            | None   |
+Table saved to ALL.csv
