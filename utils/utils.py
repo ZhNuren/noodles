@@ -31,7 +31,7 @@ def greedy_souping(state_dicts, val_results, model_config, NUM_CLASSES, val_load
     ranked_candidates = [i for i in range(len(val_models))]
     ranked_candidates.sort(key=lambda x: -val_results[x])
 
-
+        
     ranked_candidates_names = [i for i in range(len(val_models))]
     ranked_candidates_names.sort(key=lambda x: -val_results[x])
 
@@ -183,9 +183,9 @@ def get_dataset(DATASET, paths, augment, PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NU
 
     elif DATASET == "Cifar100":
             ##Cifar Dataset
-            trainset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=train_transform)
-            valset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=val_transform)
-            test_dataset = torchvision.datasets.CIFAR100(root=paths[0], train=False, transform=val_transform)
+            trainset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=train_transform, download=True)
+            valset = torchvision.datasets.CIFAR100(root=paths[0], train=True, transform=val_transform, download=True)
+            test_dataset = torchvision.datasets.CIFAR100(root=paths[0], train=False, transform=val_transform, download=True)
 
             idxs = np.load(paths[1]).astype('int')
             val_indices = []
@@ -446,3 +446,121 @@ openai_imagenet_template = [
     lambda c: f'a tattoo of the {c}.',
 ]
 
+
+def cyclic_learning_rate(epoch, cycle, alpha_1, alpha_2):
+    def schedule(iter):
+        t = ((epoch % cycle) + iter) / cycle
+        if t < 0.5:
+            return alpha_1 * (1.0 - 2.0 * t) + alpha_2 * 2.0 * t
+        else:
+            return alpha_1 * (2.0 * t - 1.0) + alpha_2 * (2.0 - 2.0 * t)
+    return schedule
+
+def cyclic_learning_rate(epoch, cycle, alpha_1, alpha_2):
+    def schedule(iter):
+        t = ((epoch % cycle) + iter) / cycle
+        if t < 0.5:
+            return alpha_1 * (1.0 - 2.0 * t) + alpha_2 * 2.0 * t
+        else:
+            return alpha_1 * (2.0 * t - 1.0) + alpha_2 * (2.0 - 2.0 * t)
+    return schedule
+
+def cyclic_learning_rate_v2(epoch, cycle, alpha_1, alpha_2):
+    # def schedule(iter):
+    #     t = ((epoch % cycle) + iter) / cycle
+    #     if t < 0.4:  # Increase for 2 epochs
+    #         return alpha_2 - ((alpha_2 - alpha_1) / 0.4) * t
+    #     else:  # Decrease for 3 epochs
+    #         return alpha_1 + ((alpha_2 - alpha_1) / 0.6) * (t - 0.4)
+    # return schedule
+    def schedule(iter):
+        t = ((epoch % cycle) + iter) / cycle
+        if t < 0.4:  # Increase for 2 epochs
+            return alpha_1 + ((alpha_2 - alpha_1) / 0.4) * t
+        else:  # Decrease for 3 epochs
+            return alpha_2 - ((alpha_2 - alpha_1) / 0.6) * (t - 0.4)
+    return schedule
+
+
+
+
+def adjust_learning_rate(optimizer, lr):
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
+    return lr
+
+
+def save_checkpoint(dir, epoch, name='checkpoint', **kwargs):
+    state = {
+        'epoch': epoch,
+    }
+    state.update(kwargs)
+    filepath = os.path.join(dir, '%s-%d.pt' % (name, epoch))
+    torch.save(state, filepath)
+
+
+
+def train(train_loader, model, optimizer, criterion, regularizer=None, lr_schedule=None):
+    loss_sum = 0.0
+    correct = 0.0
+
+    num_iters = len(train_loader)
+    model.train()
+    for iter, (input, target) in enumerate(tqdm((train_loader))):
+        if lr_schedule is not None:
+            lr = lr_schedule(iter / num_iters)
+            adjust_learning_rate(optimizer, lr)
+        input = input.to('cuda')
+        target = target.to('cuda')
+
+        output = model(input)
+        loss = criterion(output, target)
+        if regularizer is not None:
+            loss += regularizer(model)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        loss_sum += loss.item() * input.size(0)
+        pred = output.data.argmax(1, keepdim=True)
+        correct += pred.eq(target.data.view_as(pred)).sum().item()
+
+    return {
+        'loss': loss_sum / len(train_loader.dataset),
+        'accuracy': correct * 100.0 / len(train_loader.dataset),
+    }
+
+
+def test(test_loader, model, criterion, regularizer=None, **kwargs):
+    loss_sum = 0.0
+    nll_sum = 0.0
+    correct = 0.0
+    model = model.to('cuda')
+    model.eval()
+    # print(model)
+    # print('hooooodfshdkfdfjhsdkjg')
+    with torch.no_grad():
+        for input, target in test_loader:
+            # print('hooooo')
+            input = input.to('cuda')
+            target = target.to('cuda')
+
+            output = model(input, **kwargs)
+            # print(output)
+            nll = criterion(output, target)
+            loss = nll.clone()
+            if regularizer is not None:
+                loss += regularizer(model)
+
+            nll_sum += nll.item() * input.size(0)
+            loss_sum += loss.item() * input.size(0)
+            pred = torch.nn.functional.softmax(output).data.argmax(1, keepdim=True)
+            # print(pred,target)
+            correct += pred.eq(target.data.view_as(pred)).sum().item()
+            # print(correct)
+    return {
+        'nll': nll_sum / len(test_loader.dataset),
+        'loss': loss_sum / len(test_loader.dataset),
+        'accuracy': correct * 100.0 / len(test_loader.dataset),
+    }

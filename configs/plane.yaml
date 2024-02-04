@@ -17,14 +17,15 @@ paths: &PATH_OPTIONS
   - &APTOS_PATH ./dataset/224_data/DR/aptos/""./dataset/224_data/DR/aptos/aptos_dataset_splits.csv
 
 
-WEIGHT_PATH: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/aptos_final_hyp/deitS_imagenet/2024-01-10_02-53-56/"
+WEIGHT_PATH: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/cifar_final_hyp/deit-S/2024-01-07_18-19-48/"
 PRETRAINING: ImageNet
 MODEL: DeiT-S
 CLASSIFICATION: MultiClass
 TASK: Classification
-DATASET: *APTOS
-PATH: *APTOS_PATH
+DATASET: *CIFAR10
+PATH: *CIFAR_PATH
 test_sort_by: Test F1
 val_sort_by: Val F1
 LOSS: CrossEntropyLoss
-NUM_CLASSES: 5 #2 for RSNA, 10 for CIFAR 
+NUM_CLASSES: 10 #2 for RSNA, 10 for CIFAR
+SAVE_PATH: 'val1_val2_val3'

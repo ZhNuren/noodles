@@ -58,6 +58,38 @@ def multilabel_xray_dataset(targets, outputs, criterion, model, weights, device,
 
 
 
+def cyclic_learning_rate(epoch, cycle, alpha_1, alpha_2):
+    def schedule(iter):
+        t = ((epoch % cycle) + iter) / cycle
+        if t < 0.5:
+            return alpha_1 * (1.0 - 2.0 * t) + alpha_2 * 2.0 * t
+        else:
+            return alpha_1 * (2.0 * t - 1.0) + alpha_2 * (2.0 - 2.0 * t)
+    return schedule
+
+def cyclic_learning_rate_v2(epoch, cycle, alpha_1, alpha_2):
+    # def schedule(iter):
+    #     t = ((epoch % cycle) + iter) / cycle
+    #     if t < 0.4:  # Increase for 2 epochs
+    #         return alpha_2 - ((alpha_2 - alpha_1) / 0.4) * t
+    #     else:  # Decrease for 3 epochs
+    #         return alpha_1 + ((alpha_2 - alpha_1) / 0.6) * (t - 0.4)
+    # return schedule
+    def schedule(iter):
+        t = ((epoch % cycle) + iter) / cycle
+        if t < 0.4:  # Increase for 2 epochs
+            return alpha_1 + ((alpha_2 - alpha_1) / 0.4) * t
+        else:  # Decrease for 3 epochs
+            return alpha_2 - ((alpha_2 - alpha_1) / 0.6) * (t - 0.4)
+    return schedule
+
+
+
+
+def adjust_learning_rate(optimizer, lr):
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
+    return lr
 
 
 def train_step(
@@ -67,6 +99,7 @@ def train_step(
         optimizer: torch.optim.Optimizer,
         device: torch.device,
         classification = 'MultiClass',
+        lr_schedule = None,
 ):
     """
     Train model for one epoch.
@@ -93,12 +126,18 @@ def train_step(
         for task in range(13):
             task_outputs[task] = []
             task_targets[task] = []
-
-    for batch_idx, (data, target) in enumerate(tqdm(train_loader)):
+    
+    num_iters = len(train_loader)
+    for iter, (data, target) in enumerate(tqdm(train_loader)):
         data, target = data.to(device), target.to(device)
 
         optimizer.zero_grad()
         output = model(data)
+
+        if lr_schedule is not None:
+            lr = lr_schedule(iter / num_iters)
+            adjust_learning_rate(optimizer, lr)
+        
         if classification == 'MultiLabel':
             weights = get_weights(device = device, train_loader=train_loader, taskweights=True)
             loss, task_outputs, task_targets = multilabel_xray_dataset(target, output, loss_fn, model, weights, device, task_outputs, task_targets, taskweights=True)

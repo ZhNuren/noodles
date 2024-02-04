@@ -33,6 +33,7 @@ import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, default='./configs/test_config.yaml', metavar='DIR', help='configs')
+
 args = parser.parse_args()
 
 
