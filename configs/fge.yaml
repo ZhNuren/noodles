@@ -19,9 +19,9 @@ paths: &PATH_OPTIONS
   - &CHEXPERT_PATH ./dataset/""./dataset/""./dataset/""./dataset/CheXpert-v1.0_224/csv/train.csv""./dataset/CheXpert-v1.0_224/csv/valid.csv""./dataset/CheXpert-v1.0_224/csv/test_labels_v2.csv
 
 
-WEIGHT_PATH: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/chexpert_final_hyp/resnet50_imagenet/2024-01-17_17-07-33/"
+WEIGHT_PATH: "/l/users/santosh.sanjeev/model_soups/runs/san_final_hyp_models/san-finetune/chexpert_final_hyp/deits_imagenet/2024-01-21_22-05-48/"
 PRETRAINING: ImageNet
-MODEL: ResNet50
+MODEL: DeiT-S
 CLASSIFICATION: MultiLabel
 TASK: Classification
 DATASET: *CHEXPERT

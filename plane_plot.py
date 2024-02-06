@@ -24,6 +24,7 @@ matplotlib.rc('grid', linewidth=0.8)
 
 sns.set_style('whitegrid')
 
+
 class LogNormalize(colors.Normalize):
 
     def __init__(self, vmin=None, vmax=None, clip=None, log_alpha=None):
@@ -73,16 +74,18 @@ contour, contourf, colorbar = plane(
 )
 
 bend_coordinates = file['bend_coordinates']
+# curve_coordinates = file['curve_coordinates']
 
-plt.scatter(bend_coordinates[[0, 2], 0], bend_coordinates[[0, 2], 1], marker='o', c='k', s=120, zorder=2)
-plt.scatter(bend_coordinates[1, 0], bend_coordinates[1, 1], marker='D', c='k', s=120, zorder=2)
-plt.plot(bend_coordinates[[0, 2], 0], bend_coordinates[[0, 2], 1], c='k', linestyle='--', dashes=(3, 4), linewidth=3, zorder=2)
+
+plt.scatter(bend_coordinates[0, 0], bend_coordinates[0, 1], marker='o', c='k', s=120, zorder=2)
+plt.scatter(bend_coordinates[1, 0], bend_coordinates[1, 1], marker='s', c='k', s=120, zorder=2)
+plt.scatter(bend_coordinates[2, 0], bend_coordinates[2, 1], marker='D', c='k', s=120, zorder=2)
 
 plt.margins(0.0)
 plt.yticks(fontsize=18)
 plt.xticks(fontsize=18)
 colorbar.ax.tick_params(labelsize=18)
-plt.savefig(os.path.join(args.dir, 'train_loss_plane.pdf'), format='pdf', bbox_inches='tight')
+plt.savefig(os.path.join(args.dir, 'train_loss_plane.png'), format='png', bbox_inches='tight')
 plt.show()
 
 plt.figure(figsize=(12.4, 7))
@@ -96,14 +99,14 @@ contour, contourf, colorbar = plane(
 )
 
 bend_coordinates = file['bend_coordinates']
+plt.scatter(bend_coordinates[0, 0], bend_coordinates[0, 1], marker='o', c='k', s=120, zorder=2)
+plt.scatter(bend_coordinates[1, 0], bend_coordinates[1, 1], marker='s', c='k', s=120, zorder=2)
+plt.scatter(bend_coordinates[2, 0], bend_coordinates[2, 1], marker='D', c='k', s=120, zorder=2)
 
-plt.scatter(bend_coordinates[[0, 2], 0], bend_coordinates[[0, 2], 1], marker='o', c='k', s=120, zorder=2)
-plt.scatter(bend_coordinates[1, 0], bend_coordinates[1, 1], marker='D', c='k', s=120, zorder=2)
-plt.plot(bend_coordinates[[0, 2], 0], bend_coordinates[[0, 2], 1], c='k', linestyle='--', dashes=(3, 4), linewidth=3, zorder=2)
 
 plt.margins(0.0)
 plt.yticks(fontsize=18)
 plt.xticks(fontsize=18)
 colorbar.ax.tick_params(labelsize=18)
-plt.savefig(os.path.join(args.dir, 'test_error_plane.pdf'), format='pdf', bbox_inches='tight')
+plt.savefig(os.path.join(args.dir, 'test_error_plane.png'), format='png', bbox_inches='tight')
 plt.show()

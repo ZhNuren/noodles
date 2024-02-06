@@ -79,8 +79,8 @@ test_results = []
 
 if not os.path.exists(f'/home/santosh.sanjeev/Projects/model-soups/noodles/planes/{DATASET}/{MODEL}/{SAVE_PATH}'):
     os.makedirs(f'/home/santosh.sanjeev/Projects/model-soups/noodles/planes/{DATASET}/{MODEL}/{SAVE_PATH}')
-
-
+SAVE_PATH = '/home/santosh.sanjeev/Projects/model-soups/noodles/planes/{DATASET}/{MODEL}/{SAVE_PATH}'
+print(SAVE_PATH)
 train_loader, val_loader, test_loader = get_dataset(DATASET, PATHS, "Minimal", 
                                                         PRETRAINING, IMAGE_SIZE, BATCH_SIZE, NUM_WORKERS, TASK)
 

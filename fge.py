@@ -75,16 +75,16 @@ def START_seed(start_seed=9):
     random.seed(seed) 
 START_seed(start_seed=0)
 #if there is no test directory create it
-if not os.path.exists("/l/users/anees.hashmi/santosh_data/model_soups/runs/test"):
-    os.makedirs("/l/users/anees.hashmi/santosh_data/model_soups/runs/test")
+if not os.path.exists("/l/users/joseph.benjamin/santosh_data/model_soups/runs/test"):
+    os.makedirs("/l/users/joseph.benjamin/santosh_data/model_soups/runs/test")
 
 #if there is no folder named after dataset inside test directory create it
-if not os.path.exists(os.path.join("/l/users/anees.hashmi/santosh_data/model_soups/runs/test", "fge", DATASET, MODEL)):
-    os.makedirs(os.path.join("/l/users/anees.hashmi/santosh_data/model_soups/runs/test", "fge", DATASET, MODEL))
+if not os.path.exists(os.path.join("/l/users/joseph.benjamin/santosh_data/model_soups/runs/test", "fge", DATASET, MODEL)):
+    os.makedirs(os.path.join("/l/users/joseph.benjamin/santosh_data/model_soups/runs/test", "fge", DATASET, MODEL))
 
-test_save_path = os.path.join("/l/users/anees.hashmi/santosh_data/model_soups/runs/test", "fge", DATASET, MODEL)
+test_save_path = os.path.join("/l/users/joseph.benjamin/santosh_data/model_soups/runs/test", "fge", DATASET, MODEL)
 # # Open a text file for logging
-log_file_path = os.path.join("/l/users/anees.hashmi/santosh_data/model_soups/runs/test/fge", DATASET, MODEL, "output_log.txt")
+log_file_path = os.path.join("/l/users/joseph.benjamin/santosh_data/model_soups/runs/test/fge", DATASET, MODEL, "output_log_v2.txt")
 print(log_file_path)
 log_file = open(log_file_path, "w")
 
@@ -134,12 +134,12 @@ for lr in DICTIONARY.keys():
     val_models = [0]
     test_models = [0]
 
-    if lr in ['1.00e-03','1.00e-04','5.00e-04', '1.00e-05', '5.00e-05']:
+    if lr not in ['5.00e-05']:
         continue
 
-    if not os.path.exists(f'/l/users/anees.hashmi/santosh_data/model_soups/runs/test/fge/{DATASET}/{MODEL}/{lr}'):
-        os.makedirs(f'/l/users/anees.hashmi/santosh_data/model_soups/runs/test/fge/{DATASET}/{MODEL}/{lr}')
-    save_dir = f'/l/users/anees.hashmi/santosh_data/model_soups/runs/test/fge/{DATASET}/{MODEL}/{lr}'
+    if not os.path.exists(f'/l/users/joseph.benjamin/santosh_data/model_soups/runs/test/fge/{DATASET}/{MODEL}/{lr}'):
+        os.makedirs(f'/l/users/joseph.benjamin/santosh_data/model_soups/runs/test/fge/{DATASET}/{MODEL}/{lr}')
+    save_dir = f'/l/users/joseph.benjamin/santosh_data/model_soups/runs/test/fge/{DATASET}/{MODEL}/{lr}'
 
     print('SAVE_DIRRRRRRRRRRRR', save_dir)
     model_path = random.sample(DICTIONARY[lr], 1)[0]
